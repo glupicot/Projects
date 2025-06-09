@@ -1,3 +1,32 @@
 h1 {
     color: red;
 }
+@font-face{
+    font-family: 'Bounded';
+    src: url ('./fonts/Bounded-Regular.wolf2') format(wolf2);
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: 'BricolageGrotesque';
+    src: url ('./fonts/BricolageGrotesque.wolf2') format(wolf2);
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: 'VelaSans';
+    src: url ('./fonts/VelaSans-Regular.wolf2') format(wolf2);
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+:root{
+    --color-dblue: #252740;
+    --color-blue: #679DFF;
+    --color-white: #FFFFFF;
+    --color-black: #2F2D2C;
+}
