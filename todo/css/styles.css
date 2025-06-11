@@ -1,8 +1,10 @@
 body {
-    width: 100vw;
-    height: 100vh;
+    /*width: 100vw;
+    height: 100vh;*/
     background-color: var(--color-dblue);
     background-size: contain;
+    justify-content: center;
+    align-items: center;
 }
 
 @font-face{
@@ -33,17 +35,33 @@ body {
     --color-blue: #679DFF;
     --color-white: #FFFFFF;
     --color-black: #2F2D2C;
+    text-align: center;
+}
+.left {
+    display: flex;
+  width: 50%;
+  outline: 2px solid red;
+  
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  width: 50%;
+  outline: 2px solid green;
 }
 
 h1 {
     color: white;
-    font-family: BricolageGrotesque sans-serif;
+    font-family: 'BricolageGrotesque' sans-serif;
     font-weight: 700;
     font-size: 49px;
     line-height: 142%;
     width: 231px;
     height: 70px;
     text-align: center;
+
 }
 
 h2 {
@@ -65,32 +83,58 @@ width: 100%;
 text-align: center;
 }
 
-a.button {
+button {
   display: inline-block;
-  background:  --color-blue;
-  text-decoration: none; /* Убираем подчёркивание */
-  border-radius: 3px;
-  width: 141px;
-  height: 25px;
-  color: white;
+  text-decoration: none;
+  width: 467px;
+  height: 78px;
+  color: var(--color-white);
+  background: var(--color-blue);
+  border-radius: 50px;
+  border: 0;
   font-family: VelaSans;
   font-weight: 500;
   font-size: 18px;
+  text-align: center;
+  gap: 10px;
 } 
+.submit {
+text-decoration: none;
+}
 
-/*
 #flex-container {
     display: flex;
     justify-content: center;
+    text-align: center;
     align-items: center;
     width: 100%;
     height: 100%;
+    background-color: antiquewhite;
 }
 
 #form-container {
-    background-color: red;
+    background-color: gray;
     width: 504px;
     height: 504px;
 }
-    */
+p { 
+    font-family: 'VelaSans' sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
+
+
+}
+.login {
+    display: flex;
+    justify-content: center;
+    width: 467px;
+    height: 172px;
+    text-align: center;
+    padding-top: 5px;
+    display: flex;
+    border-radius: 100px;
     
+}
+
+   
