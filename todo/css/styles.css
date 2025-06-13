@@ -10,7 +10,7 @@ body {
 
 @font-face{
     font-family: "Bounded" sans-serif;
-    src: url ('assets/fonts/Bounded-Regular.wolf2') format('wolf2');
+    src: url ('assets/fonts/Bounded-Regular.woff2') format('woff2');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -18,7 +18,7 @@ body {
 
 @font-face{
     font-family: "BricolageGrotesque" sans-serif;
-    src: url ('assets/fonts/BricolageGrotesque.wolf2') format('wolf2');
+    src: url ('assets/fonts/BricolageGrotesque.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -26,8 +26,7 @@ body {
 
 @font-face{
     font-family: "VelaSans" sans-serif ;
-    src: url ('assets/fonts/VelaSans-Regular.ttf') format(truetype);
-    src: url ('assets/fonts/VelaSans-Regular.wolf2') format('wolf2');
+    src: url ('assets/fonts/VelaSans-Regular.woff2') format('woff2');
 
     font-weight: 400;
     font-style: normal;
