@@ -13,30 +13,46 @@
             <div class="container">
                 <div class="left">
                  <div class="centered">  
-                     <div id="flex-container">
-                         <div id="form-container"> 
+                
                         <h1>ToDoHero</h1>
-                         <h2> Делайте больше, волнуйтесь меньше. <br> Теперь все важные задачи будут под рукой с новым ToDo приложенияем!</h2>  
-                   
-                        <form class="login" action="">  
+                         <h2> Делайте больше, волнуйтесь меньше. Теперь все важные<br>задачи будут под рукой с новым ToDo приложенияем!</h2>  
+                         <div class="wrapper">
+                            <form action="">
+                                <div class="input">
+                                <img src="../todo/assets/icons/Person.svg" alt="icon-pers">
+                                <input type="login" placeholder="Логин пользователя" required> 
+                                </div>
+                                 <div class="input">
+                                <img src="../todo/assets/icons/Vector.svg" alt="icon-vect">
+                                <input type="password" placeholder="Пароль" required>           
+                                <button type="submit"><a href="change-password.html" class="button">Войти в систему</a></button>
+                                 <div class="wtf">
+                                    <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a>  </p>
+                                    <p>Забыли пароль? <a href="change-password.html" class="button">Восстановить пароль</a>  </p>
+                                    </div>
+
+                            </form>
+                         
+                        </div>
+
+
+                  
+                        <!-- <form class="login" action="">  
                         <input type="text" placeholder="Логин пользователя"> <br>
                         <input type="password" placeholder="Пароль">
-                        </form>
-                        <button type="submit"><a href="change-password.html" class="button">Войти в систему</a></button>
-                         <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a>  </p>
-                         <p>Забыли пароль? <a href="#" class="button">Восстановить пароль</a>  </p>
-                        </div>
-                    </div>
-                    </div> 
-                </div>
+                        </form>  -->
+                       
+                        
+                </div> 
+              </div>
                 <div class="right">
                     <div class="centered"> 
-                    <svg src='../assets/images/man.svg' alt='man'> </svg>
-                        
+                     <!--  <svg src='../assets/images/man.svg' alt='man'> </svg>-->
+                       <img src="../todo/assets/images/man.svg">
                     </div>
                 </div>
             </div> 
-        </div>
+       
 
     </body>
 </html>

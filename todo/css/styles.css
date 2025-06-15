@@ -63,6 +63,7 @@ display: flex;
 flex-wrap: wrap;
 height: 100%;
 width: 100%;
+
 }
 
 .left {
@@ -71,7 +72,7 @@ left:0;
 top:0;
 width:50%;
 height:100%;
-overflow:auto;
+overflow: hidden;
 }
 
 .right {
@@ -80,8 +81,7 @@ right:0;
 top:0;
 width:50%;
 height:100%;
-background:green;
-overflow:auto;
+overflow: hidden;
 }
 .centered {
   position: absolute;
@@ -114,8 +114,6 @@ h2 {
     font-weight: 400;
     font-size: 14px;
     line-height: 142%;
-    width: 504px;
-    height: 40px;
     text-align: center;
 }
 
@@ -152,14 +150,19 @@ text-decoration: none;
 #form-container {
     width: 504px;
     height: 504px;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
 }
 p { 
-    font-family: "VelaSans" ;
+    font-family: "VelaSans";
     color: var(--color-white);
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
 }
+/*
+
 .login {
     display: flex;
     justify-content: center;    
@@ -176,4 +179,28 @@ p {
     padding: 15 px, 20px;
     text-align: center;
     outline: auto;
+}
+    */
+
+
+    .input input {
+        width: 467px;
+        height: 78px;
+        text-indent: 84px;
+        font-family: "VelaSans";
+        font-size: 18px;
+        background-color: var(--color-white);
+        border: 1px color(--color-black);
+        outline: none;
+        border-radius: 50px;
+        width: 467px;
+   
+    }
+  .i {
+  background: url('') no-repeat center / contain; 
+  border: none;
+  padding: 10px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
 }
