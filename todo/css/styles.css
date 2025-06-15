@@ -102,10 +102,12 @@ h1 {
     color: white;
     font-family: "BricolageGrotesque";
     font-weight: 700;
-    font-size: 49px;
+    font-size: 49.41px;
     line-height: 142%;
     text-align: center;
-
+    padding: 0;
+    margin-bottom: 12px;
+    
 }
 
 h2 {
@@ -115,6 +117,8 @@ h2 {
     font-size: 14px;
     line-height: 142%;
     text-align: center;
+    padding: 0;
+    margin-bottom: 32px;
 }
 
 
@@ -132,7 +136,7 @@ button {
   font-weight: 500;
   font-size: 18px;
   text-align: center;
-  gap: 10px;
+
 } 
 .submit {
 text-decoration: none;
@@ -153,6 +157,7 @@ text-decoration: none;
     justify-content: center;
     text-align: center;
     align-items: center;
+
 }
 p { 
     font-family: "VelaSans";
@@ -183,24 +188,39 @@ p {
     */
 
 
-    .input input {
+    .input [type="login"] {
         width: 467px;
         height: 78px;
         text-indent: 84px;
         font-family: "VelaSans";
         font-size: 18px;
         background-color: var(--color-white);
-        border: 1px color(--color-black);
+        border: 1px color(--color-gray);
         outline: none;
         border-radius: 50px;
         width: 467px;
-   
+        color: var(--color-gray);
+        background-image: url(../assets/icons/Person.svg);
+        background-repeat: no-repeat;
+        background-position: 10px center;
     }
-  .i {
-  background: url('') no-repeat center / contain; 
-  border: none;
-  padding: 10px;
-  height: 20px;
-  width: 20px;
-  cursor: pointer;
-}
+
+      .input [type="password"] {
+        width: 467px;
+        height: 78px;
+        text-indent: 84px;
+        font-family: "VelaSans";
+        font-size: 18px;
+        background-color: var(--color-white);
+        border: 1px color(--color-gray);
+        outline: none;
+        border-radius: 50px;
+        width: 467px;
+        color: var(--color-gray);
+        margin-top: 16px;
+        margin-bottom: 32px;
+        background-image: url(../assets/icons/Vector.svg);
+        background-repeat: no-repeat;
+        background-position: 10px center;
+
+    }
