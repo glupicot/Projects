@@ -123,23 +123,34 @@ p {
     margin-bottom: 16px;
 }
 
-    .input [type="mail"] {
-        width: 35vw;
-        height: 78px;
-        text-indent: 84px;
-        font-family: "VelaSans";
-        font-size: 18px;
-        background-color: var(--color-white);
-        border: 1px color(--color-gray);
-        outline: none;
-        border-radius: 50px;
-        width: 467px;
-        color: var(--color-gray);
-        background-image: url(../assets/icons/mail.svg);
-        background-repeat: no-repeat;
-        background-position: 10px center;
-       
-    }
+
+
+    
+.pin-code{ 
+  padding: 0; 
+  margin: 0 auto; 
+  display: flex;
+  justify-content:center;
+  
+} 
+ 
+.pin-code input{ 
+  border: 1px black; 
+  border-radius: 16px;
+  text-align: center; 
+  width: 78px;
+  height:78px;
+  font-size: 18px; 
+  justify-content:center;
+  background-color: #F3F3F3;
+  margin-right:19.25px;
+} 
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 
 

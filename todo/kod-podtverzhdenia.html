@@ -2,7 +2,7 @@
 <html>
     <head>
        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="kod-styles.css" />
+        <link rel="stylesheet" type="text/css" href="../todo/css/kod-podtverzhdenia-styles.css" />
     </head>
     <body>
         <div id="root">
@@ -10,12 +10,17 @@
                 <div class="left">
                     <div class="center-text-box">
                          <h1>Смена пароля</h1>
-                         <h2> Для смены пароля введите адрес электронной почты,<br>привязанный к вашей учётной записи</h2>   
+                         <h2> Введите код подтверждения,<br>присланный в письме на вашу почту</h2>   
                             <form action="">
-                                 <div class="input">
-                                <input type="mail" placeholder="Введите ваш e-mail" required>   
-        
-                                <button type="submit"><a href="new-password.html" class="button">Отправить код подтверждения</a></button>
+                               <div class="pin-code">
+                                 <input type="number" placeholder="_" maxlength="1" autofocus>
+                                 <input type="number" placeholder="_" maxlength="1">
+                                 <input type="number" placeholder="_" maxlength="1">
+                                 <input type="number" placeholder="_" maxlength="1">
+                                 <input type="number" placeholder="_" maxlength="1">
+
+                                </div>
+                                <button type="submit"><a href="new-password.html" class="button">Подтвердить смену пароля</a></button>
                                  <div class="wtf">
                                     <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a>  </p>
                                  </div>
