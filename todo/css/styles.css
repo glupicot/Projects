@@ -1,6 +1,4 @@
 body {
-    /*width: 100vw;
-    height: 100vh;*/
     background-color: var(--color-dblue);
     background-size: contain;
     justify-content: center;
@@ -32,23 +30,6 @@ body {
     font-display: swap;
 }
 
-/*
-.bricolage-grotesque-font {
-  font-family: "Bricolage Grotesque", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-}
-
-.unbounded-font {
-  font-family: "Unbounded", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: medium;
-  font-style: normal;
-}*/
-
 :root{
     --color-dblue: #252740;
     --color-blue: #679DFF;
@@ -67,14 +48,27 @@ width: 100%;
 }
 
 .left {
-position:fixed;
+position:absolute;
 left:0;
 top:0;
 width:50%;
 height:100%;
 overflow: hidden;
+top:20%;
 }
 
+.centered {
+  position: absolute;
+ /* 
+ transform: translate(-50%, -50%);*/
+  text-align: center;
+}
+
+.center-text-box {
+ text-align: center;
+ vertical-align: middle;
+
+}
 .right {
 position:fixed;
 right:0;
@@ -83,12 +77,7 @@ width:50%;
 height:100%;
 overflow: hidden;
 }
-.centered {
-  position: absolute;
- /* 
- transform: translate(-50%, -50%);*/
-  text-align: center;
-}
+
   
 
 svg {
@@ -142,51 +131,17 @@ button {
 text-decoration: none;
 }
 
-#flex-container {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-}
-
-#form-container {
-    width: 504px;
-    height: 504px;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-
-}
 p { 
     font-family: "VelaSans";
     color: var(--color-white);
     font-weight: 400;
     font-size: 14px;
     line-height: 150%;
+    padding: 0;
 }
-/*
-
-.login {
-    display: flex;
-    justify-content: center;    
-    text-align: center;
-    background: var(--color-white);
-    border: 0;
-    
+.wtf {
+    margin-bottom: 16px;
 }
-.login input [type = "text"], .login input [type = "password"] {
-    display: block;
-    background: #FFFFFF;
-    border: none;
-    color: var(--color-gray);
-    padding: 15 px, 20px;
-    text-align: center;
-    outline: auto;
-}
-    */
-
 
     .input [type="login"] {
         width: 467px;
