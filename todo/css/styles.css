@@ -108,6 +108,7 @@ h2 {
 
 
 
+
 button {
   display: inline-block;
   text-decoration: none;
@@ -138,11 +139,7 @@ p {
 .wtf {
     margin-bottom: 16px;
 }
-.password-control {
-    position: absolute;
-    display: inline-block;
-    background: url(../assets/icons/glazok.svg);
-}
+
 
     .input [type="login"] {
         width: 35vw;
@@ -180,4 +177,11 @@ p {
         background-position: 10px center;
 
 
+    }
+     .input img {
+        width: 24px;
+        cursor: pointer;
+        position: absolute;
+        margin-left: -49px;
+        margin-top: 46px;
     }

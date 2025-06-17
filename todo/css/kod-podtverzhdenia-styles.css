@@ -3,6 +3,7 @@ body {
     background-size: contain;
     justify-content: center;
     align-items: center;
+    
 }
 
 @font-face {
@@ -58,6 +59,31 @@ width:50%;
 height:100%;
 overflow: hidden;
 }
+
+
+   
+.strelka{ 
+  padding: 0; 
+  margin: 0 auto; 
+  display: flex;
+  justify-content:center;
+  
+} 
+ 
+.strelka input{ 
+  border: 1px black; 
+  border-radius: 16px;
+  text-align: center; 
+  font-family: "VelaSans";
+  font-size: 18px; 
+  font-style: var(--color-gray);
+  color: var(--color-gray);
+  width: 56px;
+  height: 56px;
+
+  justify-content:center;
+  background-color: #F3F3F3;
+} 
 
 
 .center-text-box {
@@ -138,9 +164,13 @@ p {
   border: 1px black; 
   border-radius: 16px;
   text-align: center; 
+  font-family: "VelaSans";
+  font-size: 18px; 
+  font-style: var(--color-gray);
+  color: var(--color-gray);
   width: 78px;
   height:78px;
-  font-size: 18px; 
+
   justify-content:center;
   background-color: #F3F3F3;
   margin-right:19.25px;
@@ -149,12 +179,13 @@ p {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
+    
     margin: 0;
 }
 
 
 
-button {
+butto {
   display: inline-block;
   text-decoration: none;
   width: 467px;

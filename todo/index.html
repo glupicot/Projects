@@ -12,19 +12,34 @@
                          <h1>ToDoHero</h1>
                          <h2> Делайте больше, волнуйтесь меньше. Теперь все важные<br>задачи будут под рукой с новым ToDo приложенияем!</h2>   
                             <form action="">
+                                <div class="form-container">
                                 <div class="input">
                                 <input type="login" placeholder="Логин пользователя" required> 
                                 </div>
                                  <div class="input">
-                                <input type="password" placeholder="Пароль" required>   
+                                <input type="password" id="password" name="password" placeholder="Пароль" required>  
+                                        <img id="myImage" src="../todo/assets/icons/glazok-closed.svg" onclick="changeImage()">
+
+                                  <script>
+                                    function changeImage() {
+                                    let image = document.getElementById("myImage");
+                                    if (image.src.match("../todo/assets/icons/glazok-closed.svg")) {
+                                    image.src = "../todo/assets/icons/glazok.svg";
+                                    } else {
+                                    image.src = "../todo/assets/icons/glazok-closed.svg";
+                                    }
+                                    }
+                                </script>
+                                 </div>
+                           </div>
+                        
+
         
                                 <button type="submit"><a href="change-password.html" class="button">Войти в систему</a></button>
                                  <div class="wtf">
                                     <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a>  </p>
                                  </div>
                                     <p>Забыли пароль? <a href="change-password.html" class="button">Восстановить пароль</a>  </p>
-                                    <a href="#" class="password-control" onclick="return ;"></a>
-
                             </form>
                  </div> 
               </div>
