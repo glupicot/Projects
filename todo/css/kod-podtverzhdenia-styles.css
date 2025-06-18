@@ -70,21 +70,37 @@ overflow: hidden;
   
 } 
  
-.strelka input{ 
+.strelka a{ 
+
   border: 1px black; 
   border-radius: 16px;
-  text-align: center; 
-  font-family: "VelaSans";
-  font-size: 18px; 
-  font-style: var(--color-gray);
-  color: var(--color-gray);
   width: 56px;
-  height: 56px;
-
+  height:56px;
+  background-color: var(--color-white);
   justify-content:center;
   background-color: #F3F3F3;
+  background-image: url("../assets/icons/tuda.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;  
+  top:0;
+  left:0;
+  margin-top: 8px;
+  margin-left: 8px;
 } 
+.strelka p{ 
 
+  position: absolute;  
+  top:0;
+  left:0;
+  margin-top: 23.5px;
+  margin-left: 76px;
+  font-family: "VelaSans";
+  font-size: 18px; 
+  font-weight: 400;
+  font-style: var(--color-white);
+  color: var(--color-white);
+} 
 
 .center-text-box {
  text-align: center;
@@ -100,7 +116,9 @@ height:100%;
 overflow: hidden;
 }
 
-  
+.wtf a{
+   color: #679DFF;
+}  
 
 svg {
  width: 948px;
@@ -185,7 +203,7 @@ input::-webkit-inner-spin-button {
 
 
 
-butto {
+button {
   display: inline-block;
   text-decoration: none;
   width: 467px;
@@ -201,5 +219,9 @@ butto {
   text-decoration: none;
   padding: 0;
   margin-top: 32px;
+} 
 
+button a{
+  text-decoration: none; 
+  color: var(--color-white);
 } 
