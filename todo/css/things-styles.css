@@ -1,5 +1,8 @@
 body {
     background-color: var(--color-dblue);
+    margin-top: 0;
+    margin-right: 0;
+    margin: 0;
 }
 
 @font-face {

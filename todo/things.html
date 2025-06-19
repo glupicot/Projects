@@ -1,63 +1,60 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        
-       <meta charset="utf-8">
-       <link rel="stylesheet" type="text/css" href="css/things-styles.css" />
-       <script src="../todo/glaz.js"></script>
-
-    </head>
-    <body>
-        <div id="root">
-            <div class="container">
-                <div class="left">
-                    <div class="center-text-box">
-                         <h1>Things</h1>
-                         <h2> Делайте больше, волнуйтесь меньше. Теперь все важные<br>задачи будут под рукой с новым ToDo приложенияем!</h2>   
-                            <form action="">
-                                <div class="form-container">
-                                <div class="input">
-
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/things-styles.css">
+    <script src="../todo/glaz.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <div class="left">
+                <div class="center-text-box">
+                    <h1>Things</h1>
+                    <h2>Делайте больше, волнуйтесь меньше. Теперь все важные<br>задачи будут под рукой с новым ToDo приложением!</h2>
+                    
+                    <form action="">
+                        <div class="form-container">
+                            <div class="input">
                                 <div class="svglogin">
-                                <img src="../todo/assets/icons/Person.svg" alt="person-svg">
+                                    <img src="../todo/assets/icons/Person.svg" alt="person-svg">
                                 </div>
-                                <input type="login" placeholder="Логин пользователя" required> 
+                                <input type="login" placeholder="Логин пользователя" required>
                                 <div class="errorlog">
-                                    <img src="../todo/assets/icons/errorlogin.svg">
+                                    <img src="../todo/assets/icons/errorlogin.svg" alt="error-icon">
                                 </div>
+                            </div>
 
-                                </div>
-
-
-                                 <div class="input">
-                                    <div class="svgpass">
+                            <div class="input">
+                                <div class="svgpass">
                                     <img src="../todo/assets/icons/Vector.svg" alt="vector-svg">
-                                    </div>
-                                <input type="password" id="myPass" name="password" placeholder="Пароль" required>  
-                                    <div class="svgeye">
-                                        <img id="myImage" src="../todo/assets/icons/glazok-closed.svg" alt="glaz-svg" onclick="changeImage()">
-                                   </div>
+                                </div>
+                                <input type="password" id="myPass" name="password" placeholder="Пароль" required>
+                                <div class="svgeye">
+                                    <img id="myImage" src="../todo/assets/icons/glazok-closed.svg" alt="glaz-svg">
+                                </div>
+                            </div>
+                        </div>
 
-                                 </div>
-                           </div>
+                        <button type="submit" class="button">
+                            <a href="change-password.html">Войти в систему</a>
+                        </button>
                         
-
-        
-                                <button type="submit"><a href="change-password.html" class="button">Войти в систему</a></button>
-                                 <div class="wtf">
-                                    <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a>  </p>
-                                 </div>
-                                <div class="linkpass">
-                                    <p>Забыли пароль? <a href="change-password.html" class="button">Восстановить пароль</a>  </p>
-                                </div>                            </form>
-                 </div> 
-              </div>
-              <div class="right">
-                    <img src="../todo/assets/images/man.svg">
+                        <div class="wtf">
+                            <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a></p>
+                        </div>
+                        
+                        <div class="linkpass">
+                            <p>Забыли пароль? <a href="change-password.html" class="button">Восстановить пароль</a></p>
+                        </div>
+                    </form>
                 </div>
-
-            </div> 
+            </div>
+            
+            <div class="right">
+                <img src="../todo/assets/images/man.svg" alt="Illustration">
+            </div>
         </div>
-
-    </body>
+    </div>
+</body>
 </html>

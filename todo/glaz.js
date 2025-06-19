@@ -28,13 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 
-  const input = document.getElementById('myInput');
-  const button = document.getElementById('myButton');
 
-  input.addEventListener('input', function() {
-    if (input.value.trim() !== '') {
-      button.style.backgroundColor = 'green';
-    } else {
-      button.style.backgroundColor = 'red';
-    }
-  });
+
+

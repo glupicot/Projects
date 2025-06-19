@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="../todo/css/kod-podtverzhdenia-styles.css" />
-        <script src="../todo/glaz.js"></script>
-
-    </head>
-    <body>
-        <div id="root">
-            <div class="container">
-                <div class="left">
-             <div class="strelka">
-                 <a href="../todo/index.html"> </a>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../todo/css/kod-podtverzhdenia-styles.css">
+    <script src="../todo/glaz.js"></script>
+    <script src="../todo/check-kod.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <div class="left">
+                <div class="strelka">
+                    <a href="../todo/index.html"></a>
                     <p>Вернуться на стартовую страницу</p>
-                 </div>
-
-                    <div class="center-text-box">
-                         <h1>Смена пароля</h1>
-                         <h2> Введите код подтверждения,<br>присланный в письме на вашу почту</h2>   
-                            <form action="">
-                               <div class="pin-code">
-                                 <input type="number" placeholder="_" autofocus>
-                                 <input type="number" placeholder="_">
-                                 <input type="number" placeholder="_">
-                                 <input type="number" placeholder="_">
-                                 <input type="number" placeholder="_" max="9">
-                                </div>
-                                <button type="submit"><a href="new-password.html" class="button">Подтвердить смену пароля</a></button>
-                                 <div class="wtf">
-                                    <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a>  </p>
-                                 </div>
-                                
-                            </form>
-                 </div> 
-              </div>
-              <div class="right">
-                    <div class="centered"> 
-                       <img src="../todo/assets/images/man.svg">
-                    </div>
                 </div>
-            </div> 
-        </div>
 
-    </body>
+                <div class="center-text-box">
+                    <h1>Смена пароля</h1>
+                    <h2>Введите код подтверждения,<br>присланный в письме на вашу почту</h2>
+                    
+                    <form action="">
+                        <div class="pin-code">
+                            <input type="number" placeholder="_" autofocus maxlength="1" max="9">
+                            <input type="number" placeholder="_" maxlength="1" max="9">
+                            <input type="number" placeholder="_" maxlength="1" max="9">
+                            <input type="number" placeholder="_" maxlength="1" max="9">
+                            <input type="number" placeholder="_" id="myPass" maxlength="1" max="9">
+                        </div>
+                        
+                        <button type="submit" id="myButton" class="button">
+                            <a href="new-password.html">Подтвердить смену пароля</a>
+                        </button>
+                        
+                        <div class="wtf">
+                            <p>Если у вас нет учетной записи, обратитесь <a href="#" class="button">к разработчику</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="right">
+                <div class="centered">
+                    <img src="../todo/assets/images/man.svg" alt="Иллюстрация">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
