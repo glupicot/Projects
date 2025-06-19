@@ -36,46 +36,42 @@ body {
     --color-white: #FFFFFF;
     --color-black: #2F2D2C;
     --color-gray: #5C5C5C;
+    --gap-8: 8px;
     text-align: center;
 }
 
 .container {
-display: flex;
-flex-wrap: wrap;
-height: 100%;
-width: 100%;
-
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
 }
 
 .left {
-display: flex;
-flex-direction: column;
-justify-content: center;
-width:50%;
-height:100vh;
-overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width:50%;
+    height:100vh;
+    overflow: hidden;
 }
-
 
 .center-text-box {
- text-align: center;
- vertical-align: middle;
-
+    text-align: center;
+    vertical-align: middle;
 }
+
 .right {
-width:50%;
-height:100vh;
-overflow: hidden;
+    width:50%;
+    height:100vh;
+    overflow: hidden;
 }
-
-  
 
 svg {
- width: 948px;
- height: 1085px;
- left: 1920px;
-
-  }
+    width: 948px;
+    height: 1085px;
+    left: 1920px;
+}
 
 h1 {
     color: white;
@@ -86,7 +82,6 @@ h1 {
     text-align: center;
     padding: 0;
     margin-bottom: 12px;
-    
 }
 
 h2 {
@@ -187,13 +182,42 @@ p {
       padding:10px;
       }
 
-   .input .errorlog img {
-        float:left;
-      margin-top:-12px;
-      margin-left:30px;
-          position:absolute;
-      padding:0px;
-    }
+
+.errorlog {
+    display: flex; 
+    position: absolute;
+    float:left;
+    margin-top:3px;
+    margin-left:497px;
+    padding:0px;
+}
+
+.errorlog .triangle {
+      display: flex; 
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 14px solid var(--color-white);
+      rotate: 270deg;
+      margin-top:29px;
+      margin-left:-14px;
+}
+.error-text {
+    color: var(--color-black);
+    text-align:left;
+    font-weight:500;
+    font-family: "VelaSans";
+    font-size: 18px;
+    background: var(--color-white);
+    padding:12px 24px 12px 24px;
+    border-radius:16px
+}
+
+
+
+    
 
     .input .svgpass img {
       float:left;

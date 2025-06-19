@@ -16,14 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     eyeicon2.onclick = function() {
-    if(password2.type =="password"){
-        password2.type = "text";
-        eyeicon2.src = "../todo/assets/icons/glazok.svg";
-    }
-    else {
-        password2.type = "password";
-        eyeicon2.src = "../todo/assets/icons/glazok-closed.svg";
-    }
+        if(password2.type =="password"){
+            password2.type = "text";
+            eyeicon2.src = "../todo/assets/icons/glazok.svg";
+        }
+        else {
+            password2.type = "password";
+            eyeicon2.src = "../todo/assets/icons/glazok-closed.svg";
+        }
     }
 })
 
