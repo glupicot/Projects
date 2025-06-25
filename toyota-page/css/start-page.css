@@ -1,53 +1,91 @@
-body {
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            height: 100vh;
             background: #111;
             color: white;
-            margin: 0;
-            padding: 20px;
         }
-        h1 {
-            text-align: center;
+        
+        .car-page {
+            min-width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            border-right: 1px solid #333;
+        }
+        
+        .car-page h2 {
             color: #e60000;
+            margin: 20px 0;
+            font-size: 2rem;
             text-shadow: 0 0 10px rgba(230, 0, 0, 0.5);
         }
-        .garage {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-        .car {
-            background: #222;
+        
+        .car-image {
+            max-width: 90%;
+            max-height: 60vh;
+            object-fit: contain;
             border-radius: 10px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 30px rgba(230, 0, 0, 0.7);
+            transition: transform 0.3s;
+        }
+        
+        .car-image:hover {
+            transform: scale(1.03);
+        }
+        
+        .nav-dots {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #444;
             cursor: pointer;
+            transition: all 0.3s;
         }
-        .car:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(230, 0, 0, 0.3);
+        
+        .dot.active {
+            background: #e60000;
+            transform: scale(1.2);
         }
-        .car img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-bottom: 2px solid #e60000;
-        }
-        .car h3 {
-            padding: 10px;
-            margin: 0;
+        
+        .car-info {
+            max-width: 600px;
             text-align: center;
-            font-size: 18px;
+            margin-top: 20px;
+            padding: 0 20px;
+            color: #ccc;
         }
-        .search {
-            text-align: center;
-            margin: 20px;
-        }
-        #searchInput {
-            padding: 10px;
-            width: 300px;
-            border-radius: 20px;
-            border: none;
-            background: #333;
-            color: white;
+        
+        /* Для мобилок */
+        @media (max-width: 768px) {
+            .car-page h2 {
+                font-size: 1.5rem;
+            }
+            .car-info {
+                font-size: 14px;
+            }
         }

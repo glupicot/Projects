@@ -1,0 +1,210 @@
+body {
+    background-image: url("../assets/images/backgroung-img.svg");
+    overflow: hidden;
+    background-repeat: no-repeat;
+    justify-content: center;
+    align-items: center;
+    margin:0;
+    
+   
+}
+
+@font-face {
+    font-family: "Bounded";
+    src: url('../assets/fonts/Bounded-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "BricolageGrotesque";
+    src: url('../assets/fonts/BricolageGrotesque.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "VelaSans";
+    src: url('../assets/fonts/VelaSans-Regular.woff2') format('woff2'),
+         url('../assets/fonts/VelaSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root{
+    --color-dblue: #252740;
+    --color-menu: #262845;
+    --color-blue: #679DFF;
+    --color-white: #FFFFFF;
+    --color-black: #2F2D2C;
+    --color-gray: #5C5C5C;
+    --color-line: #A8A4CE;
+    --color-button-shadow: #373957;
+    text-align: center;
+}
+
+.vertical-menu {
+    width: 237px;
+    height: 1080px;
+    background-color: var(--color-menu);
+
+}
+
+
+.vertical-menu {
+  transition: width 0.3s ease; /* Плавное изменение ширины */
+}
+
+.menu-text {
+  transition: opacity 0.2s ease; /* Плавное исчезновение текста */
+}
+
+
+
+.menu-divider {
+    border: none;
+    height: 1px;
+    background-color: #A8A4CE;
+    width: 197px;
+}
+
+
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    text-align: left;
+    margin-top: -7vh;
+    height: calc(100% - 26vh);
+    width: 100%;
+}
+
+.logo-top{
+      display: flex;
+    float:left;
+    align-items: center;
+    margin-top: 30px;
+    margin-left: 24px;
+    
+}
+
+
+.toggle-btn {
+    font-family: "BricolageGrotesque";
+    font-weight: 700;
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-white);
+    margin-left:6px;
+    margin-right:10px;
+ 
+}
+
+.menu-items {
+
+}
+
+
+.menu-text {
+    text-decoration: none;
+       font-family: "VelaSans";
+    font-weight: 500;
+    font-size: 16px;
+    padding: 20px 51px 20px 16px;
+    display: flex;
+    align-items: center;
+    color: var(--color-black);
+    text-decoration: none;
+    color:white;   
+}
+
+a {
+    text-decoration: none;
+}
+.menu-icon {
+    padding-left:16px;
+   padding-top:20px;
+    width:24px;
+    height:24px
+    
+}
+
+.menu-link {
+    display: flex;
+}
+
+.entry-down {
+      display: flex;
+    float:left;
+    margin-left:34px;
+    bottom:0;
+}
+.entry {
+    margin-left:16px;
+    margin-right:34px;
+    font-family: "VelaSans";
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 14px;
+}
+
+
+
+.menu-item:hover {
+    background-color: var(--color-button-shadow);
+    border-radius: 12px;
+}
+
+.vertical-menu.collapsed .menu-text {
+  opacity: 0;
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.vertical-menu.collapsed .menu-link {
+  justify-content: center;
+    padding-bottom:15px;
+    margin-bottom:10px
+}
+
+.vertical-menu.collapsed .menu-icon {
+  padding-left: 0;
+}
+
+.vertical-menu.collapsed .toggle-btn,
+.vertical-menu.collapsed #toggle-arrow,
+.vertical-menu.collapsed .entry,
+.vertical-menu.collapsed .entry-down img[src*="log-out"] {
+    display: none;
+}
+
+
+.vertical-menu.collapsed .logo-top img {
+    display: block;
+}
+
+.vertical-menu.collapsed .entry-down {
+    justify-content: left;
+    margin-left: 28px;
+}
+
+
+.vertical-menu.collapsed .menu-divider {
+    width: 56px;
+    margin: 0 auto;
+}
+
+.vertical-menu.collapsed {
+    width: 96px;
+    height: 1080px;
+    background-color: var(--color-menu);
+}
