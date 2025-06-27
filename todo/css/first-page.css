@@ -105,7 +105,8 @@ body {
     color: var(--color-white);
     margin-left:6px;
     margin-right:10px;
- 
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .menu-items {
@@ -118,7 +119,7 @@ body {
        font-family: "VelaSans";
     font-weight: 500;
     font-size: 16px;
-    padding: 20px 51px 20px 16px;
+    padding: 0 51px 0 16px;
     display: flex;
     align-items: center;
     color: var(--color-black);
@@ -130,22 +131,20 @@ a {
     text-decoration: none;
 }
 .menu-icon {
-    padding-left:16px;
-   padding-top:20px;
-    width:24px;
-    height:24px
+   
     
 }
 
 .menu-link {
     display: flex;
+    margin-bottom: 26px !important;
+     margin-top: 26px !important;
 }
 
 .entry-down {
       display: flex;
     float:left;
     margin-left:34px;
-    bottom:0;
 }
 .entry {
     margin-left:16px;
@@ -172,8 +171,6 @@ a {
 
 .vertical-menu.collapsed .menu-link {
   justify-content: center;
-    padding-bottom:15px;
-    margin-bottom:10px
 }
 
 .vertical-menu.collapsed .menu-icon {
@@ -193,8 +190,8 @@ a {
 }
 
 .vertical-menu.collapsed .entry-down {
-    justify-content: left;
-    margin-left: 28px;
+
+
 }
 
 
