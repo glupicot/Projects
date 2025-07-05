@@ -5,14 +5,19 @@ body {
     justify-content: center;
     align-items: center;
     margin:0;
-    
-   
 }
 
 @font-face {
     font-family: "Bounded";
     src: url('../assets/fonts/Bounded-Regular.woff2') format('woff2');
     font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Unbounded";
+    src: url('../assets/fonts/Unbounded.woff2') format('woff2');
+    font-weight: 500;
     font-style: normal;
     font-display: swap;
 }
@@ -46,13 +51,15 @@ body {
     text-align: center;
 }
 
+.all-page {
+display: inline-flex;
+}
 .vertical-menu {
     width: 237px;
     height: 1080px;
     background-color: var(--color-menu);
 
 }
-
 
 .vertical-menu {
   transition: width 0.3s ease; /* Плавное изменение ширины */
@@ -62,16 +69,13 @@ body {
   transition: opacity 0.2s ease; /* Плавное исчезновение текста */
 }
 
-
-
 .menu-divider {
+
     border: none;
     height: 1px;
     background-color: #A8A4CE;
     width: 197px;
 }
-
-
 
 .menu-container {
     display: flex;
@@ -94,7 +98,6 @@ body {
     
 }
 
-
 .toggle-btn {
     font-family: "BricolageGrotesque";
     font-weight: 700;
@@ -108,11 +111,6 @@ body {
     margin-top: 0;
     margin-bottom: 0;
 }
-
-.menu-items {
-
-}
-
 
 .menu-text {
     text-decoration: none;
@@ -130,10 +128,7 @@ body {
 a {
     text-decoration: none;
 }
-.menu-icon {
-   
-    
-}
+
 
 .menu-link {
     display: flex;
@@ -154,8 +149,6 @@ a {
     font-weight: 700;
     font-size: 14px;
 }
-
-
 
 .menu-item:hover {
     background-color: var(--color-button-shadow);
@@ -184,16 +177,13 @@ a {
     display: none;
 }
 
-
 .vertical-menu.collapsed .logo-top img {
     display: block;
 }
 
 .vertical-menu.collapsed .entry-down {
-
-
+margin-top:4px;
 }
-
 
 .vertical-menu.collapsed .menu-divider {
     width: 56px;
@@ -204,4 +194,198 @@ a {
     width: 96px;
     height: 1080px;
     background-color: var(--color-menu);
+}
+
+
+.main-menu-page {
+    width: 1663px;
+    height: 1080px;  
+    display:flex;
+    flex-wrap:no-wrap;
+     align-items:left;
+    text-align:left;
+    margin-left:132px;
+    margin-top:46px;
+}
+
+
+.main-content h1 {
+    display: inline;
+    font-family: "Unbounded";
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--color-white);
+    margin-bottom: 16px;
+       
+}
+h1{
+        margin-bottom: 16px;
+
+}
+
+
+.add-new-tasks {
+    text-align:right;
+    font-family: "VelaSans";
+    color:white;
+    font-size: 18px;
+    font-weight: 500;
+    border:none;
+    background-color: var(--color-blue);
+    border-radius:50px;
+    width:277px;
+    height:49px;
+    text-align:center;
+    position: absolute;
+    right: 132px;
+}
+
+.all-my-tasks {
+    margin-bottom:48px;
+}
+.time-out {
+    margin-bottom:48px;
+
+}
+
+.now-my-tasks {
+    
+}
+
+
+
+
+.task {
+    width:800px;
+    height:auto;
+   padding-bottom:32px;
+    border: none;
+    background-color: #262845;
+    margin-bottom: 10px;
+    margin-top:16px;
+    padding-top:32px;
+    border-radius:28px
+}
+
+
+.task-header {
+    display: flex;
+    margin-left:32px;
+    align-items: center;
+    cursor: pointer;
+     font-family:"Vela-Sans", sans-serif;
+    font-size:20px;
+    font-weight:500;
+    color:white;
+}
+
+.complete-icon {
+    width: 24px;
+  
+}
+
+.task-name {
+ flex-grow: 1;
+ margin-left:16px;
+
+}
+
+
+.toggle-icon {
+    margin-right:8px;
+    width: 24px;
+    height: 24px;
+    background-color: #373957;
+    border-radius:8px;
+    padding:8px;
+    transition: transform 0.3s;
+}
+.toggle-icon-second {
+    margin-right:32px;
+    width: 24px;
+    height: 24px;
+    background-color: #373957;
+    border-radius:8px;
+    padding:8px;
+    transition: transform 0.3s;
+}
+
+.task-description {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+    background: none;
+    color: var(--color-white);
+    font-family: "VelaSans";
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    margin-left:62px;
+
+}
+
+
+
+.day-sprint {
+    margin-left: 72px;
+    display:flex;
+     align-items: center;
+    position:relative;
+}
+.day-sprint .day{
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    color:white;
+}
+
+.day-sprint .day-img{
+    height: 24px;
+    width: 24px;
+    text-align:center;
+}
+.day-sprint .sprint{
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    color:white;
+}
+
+.repeat-icon {
+    margin-left:auto;
+    align-self:right;
+    margin-right:32px;
+
+}
+
+
+.task.active .task-description {
+    padding: 10px;
+    max-height: 100px;
+}
+
+
+.task.completed .complete-icon {
+    background: #373957;
+    background-width:24px;
+    width: 12px;
+    border:6px solid #373957;
+    border-radius:12px;
+    content: url("../assets/icons/tasks-check.svg");
+}
+
+
+
+
+.task.completed .task-description {
+    color: #656896;
+    text-decoration: line-through;
+}
+.task.completed h2 {
+    color: #656896;
+    text-decoration: line-through;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
 }
