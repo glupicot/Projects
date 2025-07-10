@@ -110,7 +110,8 @@ h2 {
 
 
 button {
-  display: inline-block;
+  display: block;
+  margin:0 auto;
   text-decoration: none;
   width: 467px;
   height: 78px;
@@ -156,14 +157,14 @@ p {
 
 
 
-    .form-container .input {
-     width: 467px;
-     height: 78px;
-     align-items: center;
-     background: var(--color-white);
-     outline: solid black 1px;
-     border-radius:50px;
-            margin-bottom: 16px;
+  .form-container .input {
+    width: 467px;
+    height: 78px;
+    align-items: center;
+    background: var(--color-white);
+    outline: solid black 1px;
+    border-radius:50px;
+    margin-bottom: 16px;
 
     
     }
