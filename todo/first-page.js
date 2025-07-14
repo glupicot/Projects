@@ -1,21 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
   // Все DOM элементы
   const DOM = {
-    // Элементы меню
     toggleButton: document.querySelector(".logo-top"),
     verticalMenu: document.querySelector(".vertical-menu"),
-    
-    // Элементы задач
     addNewTaskBtn: document.querySelector(".add-new-tasks"),
     nowMyTasks: document.querySelector(".now-my-tasks"),
-    
-    // Элементы формы
+    timeOutTasks: document.querySelector(".time-out"),
     overlayContent: document.querySelector(".overlay-content"),
     saveBtn: document.querySelector(".save-note"),
     cancelBtn: document.querySelector(".stop-note"),
     backBtn: document.querySelector(".button-chevron-left"),
-    
-    // Поля формы
     taskTitleInput: document.querySelector('input[type="title"]'),
     taskDescriptionInput: document.querySelector('textarea[type="maintext"]'),
     creationDateInput: document.querySelector('input[type="date"]'),
@@ -24,109 +18,151 @@ document.addEventListener("DOMContentLoaded", function() {
     datePlaceholder: document.querySelector('.date-placeholder')
   };
 
-  // Проверка основных элементов
-  if (!DOM.toggleButton || !DOM.verticalMenu) {
-    console.error("Основные элементы не найдены!");
-    return;
-  }
+  // Загрузка задач из localStorage или начальные данные
+  let tasks = JSON.parse(localStorage.getItem('tasks')) || [
+    {
+      title: "Адаптивная верстка лендинга",
+      description: "Лалала я люблю чай",
+      dueDate: "2025-05-22",
+      sprint: "Работа",
+      completed: false,
+      expanded: false
+    },
+    {
+      title: "Интеграция с REST API",
+      description: "Подключить фронтенд-приложение к внешнему API для получения и отображения списка товаров. Добавить лоадер при загрузке и обработку ошибок сети.",
+      dueDate: new Date().toISOString().split('T')[0],
+      sprint: "Семья",
+      completed: false,
+      expanded: false
+    },
+    {
+      title: "Настройка маршрутизации в SPA",
+      description: "",
+      dueDate: new Date().toISOString().split('T')[0],
+      sprint: "Учеба",
+      completed: false,
+      expanded: false
+    },
+    {
+      title: "Улучшение производительности страницы",
+      description: "Провести аудит производительности с помощью Lighthouse. Оптимизировать изображения, настроить lazy loading и минимизировать количество ререндеров компонентов.",
+      dueDate: new Date().toISOString().split('T')[0],
+      sprint: "Работа",
+      completed: false,
+      expanded: false
+    }
+  ];
 
   // Инициализация приложения
   function init() {
     initMenu();
-    initTasks();
     initTaskForm();
-    loadTasks();
+    syncTasks();
     initDatePlaceholder();
   }
 
-  // Работа с меню
+  // Меню
   function initMenu() {
-    DOM.toggleButton.addEventListener("click", function(e) {
-      e.stopPropagation();
+    DOM.toggleButton.addEventListener("click", function() {
       DOM.verticalMenu.classList.toggle("collapsed");
     });
   }
 
-  // Работа с задачами
-  function initTasks() {
-    document.querySelectorAll('.task').forEach(task => {
-      setupTaskEventListeners(task);
-      updateTaskState(task);
-    });
+  // Форма задачи
+  function initTaskForm() {
+    DOM.addNewTaskBtn.addEventListener('click', showTaskForm);
+    DOM.saveBtn.addEventListener('click', saveTask);
+    DOM.cancelBtn.addEventListener('click', hideTaskForm);
+    DOM.backBtn.addEventListener('click', hideTaskForm);
   }
 
-  function setupTaskEventListeners(task) {
-    const header = task.querySelector('.task-header');
-    const completeIcon = header.querySelector('.complete-icon');
-    const toggleIcon = header.querySelector('.toggle-icon');
+  function showTaskForm() {
+    DOM.overlayContent.style.display = 'block';
+    DOM.creationDateInput.value = new Date().toISOString().split('T')[0];
+    DOM.dueDateInput.value = '';
+    DOM.datePlaceholder.style.display = 'block';
+  }
+
+  function hideTaskForm() {
+    DOM.overlayContent.style.display = 'none';
+    DOM.taskTitleInput.value = '';
+    DOM.taskDescriptionInput.value = '';
+    DOM.dueDateInput.value = '';
+    DOM.taskSprintInput.value = '';
+  }
+
+  function saveTask() {
+    const title = DOM.taskTitleInput.value.trim();
+    const dueDate = DOM.dueDateInput.value;
+    if (!title || !dueDate) return alert('Заполните заголовок и дату');
+
+    tasks.push({
+      title: title,
+      description: DOM.taskDescriptionInput.value.trim(),
+      dueDate: dueDate,
+      sprint: DOM.taskSprintInput.value.trim() || 'Без спринта',
+      completed: false,
+      expanded: false
+    });
+
+    saveAndSync();
+    hideTaskForm();
+  }
+
+  // Работа с задачами
+  function setupTaskEvents(taskElement, taskData) {
+    const completeIcon = taskElement.querySelector('.complete-icon');
+    const toggleIcon = taskElement.querySelector('.toggle-icon');
+    const deleteBtn = taskElement.querySelector('.delete');
+    const header = taskElement.querySelector('.task-header');
 
     completeIcon.addEventListener('click', function(e) {
       e.stopPropagation();
-      task.classList.toggle('completed');
-      updateTaskState(task);
-      saveTasks();
+      taskData.completed = !taskData.completed;
+      saveAndSync();
+    });
+
+    deleteBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (confirm('Удалить задачу?')) {
+        tasks = tasks.filter(t => t !== taskData);
+        saveAndSync();
+      }
     });
 
     toggleIcon.addEventListener('click', function(e) {
       e.stopPropagation();
-      toggleTask(task);
+      taskData.expanded = !taskData.expanded;
+      saveAndSync();
     });
 
     header.addEventListener('click', function(e) {
-      if (![completeIcon, toggleIcon].includes(e.target)) {
-        toggleTask(task);
+      if (![completeIcon, toggleIcon, deleteBtn].includes(e.target)) {
+        taskData.expanded = !taskData.expanded;
+        saveAndSync();
       }
     });
   }
 
-  function toggleTask(task) {
-    task.classList.toggle('expanded');
-    updateTaskState(task);
-  }
+  function updateTaskState(taskElement, taskData) {
+    const isCompleted = taskData.completed;
+    const isExpanded = taskData.expanded;
 
-  function updateTaskState(task) {
-    const isCompleted = task.classList.contains('completed');
-    const isExpanded = task.classList.contains('expanded');
-    const header = task.querySelector('.task-header');
-    
     // Обновление иконок
-    const icons = {
-      complete: header.querySelector('.complete-icon'),
-      toggle: header.querySelector('.toggle-icon'),
-      repeat: task.querySelector('.repeat-icon')
-    };
+    taskElement.querySelector('.complete-icon').src = isCompleted 
+      ? "../todo/assets/icons/tasks-check.svg" 
+      : "../todo/assets/icons/tasks-ellipse.svg";
 
-    if (icons.complete) {
-      icons.complete.src = isCompleted 
-        ? "../todo/assets/icons/tasks-check.svg" 
-        : "../todo/assets/icons/tasks-ellipse.svg";
-    }
-    
-    if (icons.toggle) {
-      icons.toggle.src = isExpanded
-        ? "../todo/assets/icons/tasks-chevron-down.svg"
-        : "../todo/assets/icons/tasks-chevron-right.svg";
-    }
-    
-    if (icons.repeat) {
-      icons.repeat.src = isCompleted
-        ? "../todo/assets/icons/tasks-repeat-off.svg"
-        : "../todo/assets/icons/tasks-repeat-on.svg";
-    }
-
-    // Обновление описания
-    const description = task.querySelector('.task-description');
-    if (description) {
-      description.style.maxHeight = isExpanded 
-        ? description.scrollHeight + "px" 
-        : "0";
-    }
+    taskElement.querySelector('.toggle-icon').src = isExpanded
+      ? "../todo/assets/icons/tasks-chevron-down.svg"
+      : "../todo/assets/icons/tasks-chevron-right.svg";
 
     // Обновление текста
     const textElements = [
-      header.querySelector('.task-name'),
-      task.querySelector('.day'),
-      task.querySelector('.sprint')
+      taskElement.querySelector('.task-name'),
+      taskElement.querySelector('.day'),
+      taskElement.querySelector('.sprint')
     ];
     
     textElements.forEach(el => {
@@ -135,308 +171,124 @@ document.addEventListener("DOMContentLoaded", function() {
         el.style.textDecoration = isCompleted ? 'line-through' : '';
       }
     });
-  }
 
-  // Работа с формой задачи
-  function initTaskForm() {
-    // Показать форму
-    if (DOM.addNewTaskBtn) {
-      DOM.addNewTaskBtn.addEventListener('click', showTaskForm);
-    }
-
-    // Скрыть форму
-    const hideButtons = [DOM.cancelBtn, DOM.backBtn];
-    hideButtons.forEach(btn => {
-      if (btn) btn.addEventListener('click', hideTaskForm);
-    });
-
-    // Сохранить задачу
-    if (DOM.saveBtn) {
-      DOM.saveBtn.addEventListener('click', saveTask);
+    // Обновление описания
+    const description = taskElement.querySelector('.task-description');
+    if (description) {
+      description.style.maxHeight = isExpanded 
+        ? description.scrollHeight + "px" 
+        : "0";
     }
   }
 
- function showTaskForm() {
-  DOM.overlayContent.style.display = 'block';
-  const today = new Date();
-  DOM.creationDateInput.value = today.toISOString().split('T')[0];
-  
-  DOM.dueDateInput.value = '';
-  DOM.dueDateInput.style.color = 'transparent';
-  
-  // Удаляем отображение даты, если есть
-  const dateDisplay = DOM.dueDateInput.nextElementSibling;
-  if (dateDisplay && dateDisplay.classList.contains('date-display')) {
-    dateDisplay.remove();
-  }
-  
-  DOM.datePlaceholder.style.display = 'block';
-}
-
-  function hideTaskForm() {
-    DOM.overlayContent.style.display = 'none';
-    DOM.taskTitleInput.value = '';
-    DOM.taskDescriptionInput.value = '';
-    DOM.dueDateInput.value = '';
-    DOM.taskSprintInput.value = '';
-    updateDatePlaceholder();
+  // Синхронизация данных
+  function saveAndSync() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    syncTasks();
   }
 
-  function saveTask() {
-    const title = DOM.taskTitleInput?.value.trim();
-    const description = DOM.taskDescriptionInput?.value.trim();
-    const dueDate = DOM.dueDateInput?.value;
-    const sprint = DOM.taskSprintInput?.value.trim();
-
-    if (!title || !dueDate) {
-      alert('Заполните обязательные поля: Заголовок и Дата исполнения');
-      return;
-    }
-
-    const newTask = createTaskElement(title, description, dueDate, sprint);
-    DOM.nowMyTasks.appendChild(newTask);
+  function syncTasks() {
+    if (!DOM.nowMyTasks || !DOM.timeOutTasks) return;
     
-    hideTaskForm();
-    setupTaskEventListeners(newTask);
-    saveTasks();
+    DOM.nowMyTasks.innerHTML = '';
+    const timeOutContainer = DOM.timeOutTasks.querySelector('.task-container') || DOM.timeOutTasks;
+    timeOutContainer.innerHTML = '';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    tasks.forEach(task => {
+      const taskElement = createTaskElement(task);
+      const taskDate = new Date(task.dueDate);
+      const isOverdue = taskDate < today && !task.completed;
+
+      if (isOverdue) {
+        timeOutContainer.appendChild(taskElement);
+      } else {
+        DOM.nowMyTasks.appendChild(taskElement);
+      }
+
+      setupTaskEvents(taskElement, task);
+      updateTaskState(taskElement, task);
+    });
   }
 
-  function formatDate(dateString) {
-    const date = new Date(dateString);
+  function createTaskElement(task) {
+    const date = new Date(task.dueDate);
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    if (date.toDateString() === today.toDateString()) return 'Сегодня';
-    if (date.toDateString() === tomorrow.toDateString()) return 'Завтра';
-    
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    return `${day}.${month}.${date.getFullYear()}`;
-  }
+    let displayDate;
+    if (date.toDateString() === today.toDateString()) displayDate = 'Сегодня';
+    else if (date.toDateString() === tomorrow.toDateString()) displayDate = 'Завтра';
+    else displayDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear()}`;
 
-  function checkOverdue(dateString) {
-    const taskDate = new Date(dateString);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return taskDate < today;
-  }
+    const isOverdue = date < today && !task.completed;
+    const descriptionHtml = task.description ? task.description.replace(/\n/g, '<br>') : '';
 
+    const taskElement = document.createElement('div');
+    taskElement.className = 'task';
+    if (task.completed) taskElement.classList.add('completed');
+    if (task.expanded) taskElement.classList.add('expanded');
 
-  function createTaskElement(title, description, dueDate, sprint) {
-    const task = document.createElement('div');
-    task.className = 'task';
-    
-    const displayDate = formatDate(dueDate);
-    const isOverdue = checkOverdue(dueDate);
-    
-    task.innerHTML = `
+    taskElement.innerHTML = `
       <div class="task-header">
         <img src="../todo/assets/icons/tasks-ellipse.svg" class="complete-icon" alt="Статус">
-        <span class="task-name">${title}</span>
+        <span class="task-name">${task.title}</span>
         <img src="../todo/assets/icons/tasks-chevron-down.svg" class="toggle-icon" alt="Развернуть">
-        <img src="../todo/assets/icons/tasks-menu.svg" class="toggle-icon-second" alt="Меню">
+        <img src="../todo/assets/icons/delete.svg" class="delete" alt="Удалить">
       </div>
       <div class="task-description">
-        <p>${description || ''}</p>
+        <p>${descriptionHtml}</p>
       </div>
       <div class="day-sprint">
         <h2 class="day ${isOverdue ? 'overdue' : ''}">${displayDate}</h2>
         <img class="day-img" src="../todo/assets/icons/point.svg">
-        <h2 class="sprint">${sprint || 'Спринт не выбран'}</h2>
+        <h2 class="sprint">${task.sprint}</h2>
         <img src="../todo/assets/icons/tasks-repeat-on.svg" class="repeat-icon">
       </div>
     `;
     
-    return task;
-  }
-
-  // Работа с датами
-  function formatDate(dateString) {
-  const date = new Date(dateString);
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  
-  // Форматируем дату без "гг дд"
-  if (date.toDateString() === today.toDateString()) return 'Сегодня';
-  if (date.toDateString() === tomorrow.toDateString()) return 'Завтра';
-  
-  // Форматируем дату в формате DD.MM.YYYY
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-}
-
-  // LocalStorage
-  function saveTasks() {
-    const tasks = [];
-    document.querySelectorAll('.task').forEach(task => {
-      tasks.push({
-        title: task.querySelector('.task-name').textContent,
-        description: task.querySelector('.task-description p')?.textContent || '',
-        dueDate: task.querySelector('.day').textContent,
-        sprint: task.querySelector('.sprint').textContent,
-        completed: task.classList.contains('completed')
-      });
-    });
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }
-
-  function loadTasks() {
-    const saved = JSON.parse(localStorage.getItem('tasks'));
-    if (saved?.length) {
-      saved.forEach(task => {
-        const element = createTaskElement(
-          task.title,
-          task.description,
-          task.dueDate === 'Сегодня' ? new Date().toISOString().split('T')[0] :
-          task.dueDate === 'Завтра' ? new Date(Date.now() + 86400000).toISOString().split('T')[0] :
-          task.dueDate,
-          task.sprint
-        );
-        if (task.completed) element.classList.add('completed');
-        DOM.nowMyTasks.appendChild(element);
-      });
-    }
+    return taskElement;
   }
 
   // Плейсхолдер для даты
-function initDatePlaceholder() {
-  if (!DOM.dueDateInput || !DOM.datePlaceholder) return;
+  function initDatePlaceholder() {
+    if (!DOM.dueDateInput || !DOM.datePlaceholder) return;
 
-  // Создаем стили для скрытия стандартного текста
-  const style = document.createElement('style');
-  style.textContent = `
-    .due-date-input::-webkit-datetime-edit {
-      visibility: hidden;
-      width: 0;
-      padding: 0;
-    }
-    .due-date-input::-webkit-inner-spin-button,
-    .due-date-input::-webkit-clear-button {
-      -webkit-appearance: none;
-      display: none;
-    }
-  `;
-  document.head.appendChild(style);
+    const dateDisplay = document.createElement('span');
+    dateDisplay.className = 'custom-date-display';
+    dateDisplay.style.cssText = `
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-white);
+      font-family: "VelaSans";
+      font-weight: 600;
+      font-size: 16px;
+      pointer-events: none;
+      width: calc(100% - 50px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    `;
+    DOM.dueDateInput.parentNode.insertBefore(dateDisplay, DOM.dueDateInput.nextSibling);
 
-  // Создаем элемент для отображения даты
-  const dateDisplay = document.createElement('span');
-  dateDisplay.className = 'custom-date-display';
-  dateDisplay.style.cssText = `
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-white);
-    font-family: "VelaSans";
-    font-weight: 600;
-    font-size: 16px;
-    pointer-events: none;
-    width: calc(100% - 50px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  `;
-  DOM.dueDateInput.parentNode.insertBefore(dateDisplay, DOM.dueDateInput.nextSibling);
-
-  // Обработчик изменения даты
-  DOM.dueDateInput.addEventListener('change', function() {
-    if (this.value) {
-      const date = new Date(this.value);
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      dateDisplay.textContent = `${day}.${month}.${date.getFullYear()}`;
-      DOM.datePlaceholder.style.display = 'none';
-    } else {
-      dateDisplay.textContent = '';
-      DOM.datePlaceholder.style.display = 'block';
-    }
-  });
-
-  // Инициализация при загрузке
-  if (DOM.dueDateInput.value) {
-    DOM.dueDateInput.dispatchEvent(new Event('change'));
-  }
-}
-
-// Обновляем showTaskForm
-function showTaskForm() {
-  DOM.overlayContent.style.display = 'block';
-  const today = new Date();
-  DOM.creationDateInput.value = today.toISOString().split('T')[0];
-  
-  DOM.dueDateInput.value = '';
-  const dateDisplay = document.querySelector('.custom-date-display');
-  if (dateDisplay) dateDisplay.textContent = '';
-  DOM.datePlaceholder.style.display = 'block';
-  
-  // Сброс стилей
-  DOM.dueDateInput.style.color = 'transparent';
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Получаем элементы
-  const dueDateInput = document.getElementById('dueDate');
-  const datePlaceholder = document.querySelector('.date-placeholder');
-  
-  // Проверяем наличие элементов
-  if (!dueDateInput || !datePlaceholder) return;
-
-  // Функция для обновления видимости плейсхолдера
-  function updatePlaceholder() {
-    if (dueDateInput.value) {
-      // Если дата выбрана - скрываем плейсхолдер
-      datePlaceholder.style.display = 'none';
-      
-      // Форматируем дату для красивого отображения
-      const date = new Date(dueDateInput.value);
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear();
-      
-      // Применяем форматирование (опционально)
-      dueDateInput.style.color = 'var(--color-white)';
-    } else {
-      // Если дата не выбрана - показываем плейсхолдер
-      datePlaceholder.style.display = 'block';
-      dueDateInput.style.color = 'transparent';
-    }
-  }
-
-  // Обработчики событий
-  dueDateInput.addEventListener('input', updatePlaceholder);
-  dueDateInput.addEventListener('change', updatePlaceholder);
-  dueDateInput.addEventListener('focus', function() {
-    datePlaceholder.style.display = 'none';
-  });
-  dueDateInput.addEventListener('blur', updatePlaceholder);
-
-  // Инициализация при загрузке
-  updatePlaceholder();
-
-  // Дополнительно: Очистка даты по клику на плейсхолдер
-  datePlaceholder.addEventListener('click', function() {
-    dueDateInput.focus();
-  });
-
-  // Для формы: проверка перед отправкой
-  const form = dueDateInput.closest('form');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      if (!dueDateInput.value) {
-        e.preventDefault();
-        alert('Пожалуйста, выберите дату исполнения');
-        dueDateInput.focus();
+    DOM.dueDateInput.addEventListener('change', function() {
+      if (this.value) {
+        const date = new Date(this.value);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        dateDisplay.textContent = `${day}.${month}.${date.getFullYear()}`;
+        DOM.datePlaceholder.style.display = 'none';
+      } else {
+        dateDisplay.textContent = '';
+        DOM.datePlaceholder.style.display = 'block';
       }
     });
   }
-});
 
-
-
-  // Запуск приложения
   init();
 });

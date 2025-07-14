@@ -277,6 +277,9 @@ h1{
 
 .task {
     max-width:1400px;
+    width: 1400px;
+    min-width: 1400px;
+    max-width: none;
     height:auto;
    padding-bottom:32px;
     border: none;
@@ -320,7 +323,7 @@ h1{
     padding:8px;
     transition: transform 0.3s;
 }
-.toggle-icon-second {
+.delete{
     margin-right:32px;
     width: 24px;
     height: 24px;

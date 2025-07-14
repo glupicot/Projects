@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toyota Camry Drift Arena</title>
+  <script src="../toyota-page/camry.js"></script>
+    <link rel="stylesheet" href="../toyota-page/css/camry.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-ui">
+            <div>Очки: <span id="score">0</span></div>
+            <div>Время: <span id="time">60</span> сек</div>
+        </div>
+        <canvas id="driftCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <p>Управление: ↑↓ - газ/тормоз, ←→ - руль, Пробел - дрифт</p>
+        </div>
+        
+        <div class="modal" id="startModal">
+            <div class="modal-content">
+                <h2>TOYOTA CAMRY DRIFT</h2>
+                <p>Наберите максимум очков за 60 секунд!</p>
+                <p>Дрифтуйте (Пробел) для получения очков</p>
+                <button id="startButton">СТАРТ</button>
+            </div>
+        </div>
+        
+        <div class="modal" id="endModal" style="display:none;">
+            <div class="modal-content">
+                <h2>РЕЗУЛЬТАТ</h2>
+                <p>Ваш счет: <span id="finalScore">0</span> очков</p>
+                <div class="highscores">
+                    <h3>ТОП-5 РЕКОРДОВ</h3>
+                    <ol id="highscoresList" style="text-align: left; padding-left: 20px;"></ol>
+                </div>
+                <button id="restartButton">ИГРАТЬ СНОВА</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
