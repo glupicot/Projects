@@ -1,5 +1,4 @@
-// camry-drift-final.js - Дрифт-арена с Toyota Camry (исправленная версия)
-
+// camry-drift-final.js - Исправленная версия
 document.addEventListener('DOMContentLoaded', function() {
     // Элементы DOM
     const canvas = document.getElementById('driftCanvas');
@@ -15,18 +14,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Настройки игры
     const HIGHSCORES_KEY = 'camryDriftHighscores';
+    const GAME_DURATION = 60;
     let highscores = JSON.parse(localStorage.getItem(HIGHSCORES_KEY)) || [];
-    let gameTime = 60;
+    let gameTime = GAME_DURATION;
     let gameInterval, timeInterval;
     let smokeParticles = [];
 
-    // Изображение машины (Toyota Camry)
+    // Изображение машины
     const carImage = new Image();
-    carImage.src = '../toyota-page/assets/icons/camry.png'; // Убедитесь, что путь правильный
+    carImage.src = '../toyota-page/assets/icons/camry.png';
     let imageLoaded = false;
-    carImage.onload = function() {
-        imageLoaded = true;
-    };
+    carImage.onload = () => imageLoaded = true;
 
     // Объект машины
     const car = {
@@ -39,26 +37,22 @@ document.addEventListener('DOMContentLoaded', function() {
         acceleration: 0.08,
         brakePower: 0.15,
         reverseSpeed: 3,
-        angle: 0, // 0 радиан = смотрит вверх
+        angle: 0,
         driftPower: 0,
         score: 0,
         
         update() {
-            // Ускорение
+            // Управление
             if (keys.ArrowUp) {
                 this.speed = Math.min(this.maxSpeed, this.speed + this.acceleration);
-            } 
-            // Торможение/Задний ход
-            else if (keys.ArrowDown) {
+            } else if (keys.ArrowDown) {
                 this.speed = Math.max(-this.reverseSpeed, this.speed - this.brakePower);
-            } 
-            // Естественное замедление
-            else {
+            } else {
                 this.speed *= 0.97;
                 if (Math.abs(this.speed) < 0.1) this.speed = 0;
             }
 
-            // Руление (только при движении)
+            // Руление
             if (Math.abs(this.speed) > 0.5) {
                 const turnFactor = this.speed / this.maxSpeed;
                 const turnSpeed = 0.03 * turnFactor;
@@ -67,22 +61,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (keys.ArrowRight) this.angle += turnSpeed;
             }
 
-            // Механика дрифта
+            // Дрифт
             if (keys[' '] && Math.abs(this.speed) > 2) {
                 this.driftPower = Math.min(1, this.driftPower + 0.05);
                 const driftAngle = 0.05 * (this.speed / this.maxSpeed);
                 this.angle += keys.ArrowLeft ? -driftAngle : keys.ArrowRight ? driftAngle : 0;
                 
-                // Частицы дыма
                 if (Math.random() < 0.3) {
-                    smokeParticles.push({
-                        x: this.x - Math.sin(this.angle) * 30,
-                        y: this.y + Math.cos(this.angle) * 30,
-                        size: 5 + Math.random() * 10,
-                        alpha: 0.7,
-                        life: 30
-                    });
-                    // Добавление очков за дрифт
+                    this.addSmoke();
                     this.score += Math.floor(this.driftPower * 5);
                     scoreDisplay.textContent = this.score;
                 }
@@ -94,11 +80,19 @@ document.addEventListener('DOMContentLoaded', function() {
             this.x += Math.sin(this.angle) * this.speed;
             this.y -= Math.cos(this.angle) * this.speed;
 
-            // Проверка границ
-            if (this.x < 0) this.x = canvas.width;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.y < 0) this.y = canvas.height;
-            if (this.y > canvas.height) this.y = 0;
+            // Границы
+            this.x = (this.x + canvas.width) % canvas.width;
+            this.y = (this.y + canvas.height) % canvas.height;
+        },
+        
+        addSmoke() {
+            smokeParticles.push({
+                x: this.x - Math.sin(this.angle) * 30,
+                y: this.y + Math.cos(this.angle) * 30,
+                size: 5 + Math.random() * 10,
+                alpha: 0.7,
+                life: 30
+            });
         },
         
         draw() {
@@ -106,12 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.translate(this.x, this.y);
             ctx.rotate(this.angle);
             
-            // Рисуем машину (изображение или заглушку)
             if (imageLoaded) {
-                // Рисуем изображение без дополнительных поворотов
                 ctx.drawImage(carImage, -this.width/2, -this.height/2, this.width, this.height);
             } else {
-                // Запасной вариант
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height);
                 ctx.fillStyle = '#E30613';
@@ -127,22 +118,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Сегменты трассы
+    // Трасса
     const track = {
         segments: [],
         generate() {
-            this.segments = [];
-            // Генерация случайной трассы
-            for (let i = 0; i < 15; i++) {
-                this.segments.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    width: 60 + Math.random() * 90
-                });
-            }
+            this.segments = Array.from({length: 15}, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                width: 60 + Math.random() * 90
+            }));
         },
         draw() {
-            // Дорога
             ctx.fillStyle = '#333';
             this.segments.forEach(seg => {
                 ctx.beginPath();
@@ -150,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 ctx.fill();
             });
             
-            // Границы
             ctx.strokeStyle = '#E30613';
             ctx.lineWidth = 3;
             this.segments.forEach(seg => {
@@ -161,20 +146,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Частицы дыма
+    // Частицы
     function updateSmoke() {
-        for (let i = smokeParticles.length - 1; i >= 0; i--) {
-            const p = smokeParticles[i];
+        smokeParticles = smokeParticles.filter(p => {
             p.x += Math.random() * 3 - 1.5;
             p.y += Math.random() * 3 - 1.5;
             p.size += 0.2;
             p.alpha -= 0.02;
-            p.life--;
-            
-            if (p.life <= 0 || p.alpha <= 0) {
-                smokeParticles.splice(i, 1);
-            }
-        }
+            return p.life-- > 0 && p.alpha > 0;
+        });
     }
 
     function drawSmoke() {
@@ -186,45 +166,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Управление с клавиатуры
+    // Управление
     const keys = {};
     document.addEventListener('keydown', (e) => {
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
-            keys[e.code === 'Space' ? ' ' : e.code] = true;
+        const code = e.code === 'Space' ? ' ' : e.code;
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(code)) {
+            keys[code] = true;
             e.preventDefault();
         }
     });
 
     document.addEventListener('keyup', (e) => {
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
-            keys[e.code === 'Space' ? ' ' : e.code] = false;
+        const code = e.code === 'Space' ? ' ' : e.code;
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(code)) {
+            keys[code] = false;
         }
     });
 
-    // Функции игры
+    // Игровые функции
     function startGame() {
         startModal.style.display = 'none';
         endModal.style.display = 'none';
-        car.score = 0;
-        gameTime = 60;
-        scoreDisplay.textContent = '0';
-        timeDisplay.textContent = '60';
-        smokeParticles = [];
-        car.x = canvas.width / 2;
-        car.y = canvas.height / 2;
-        car.speed = 0;
-        car.angle = 0; // Начальный угол - смотрит вверх
+        resetGame();
         track.generate();
         
-        // Таймер
         timeInterval = setInterval(() => {
             gameTime--;
             timeDisplay.textContent = gameTime;
             if (gameTime <= 0) endGame();
         }, 1000);
         
-        // Игровой цикл
         gameInterval = setInterval(gameLoop, 1000/60);
+    }
+
+    function resetGame() {
+        car.score = 0;
+        gameTime = GAME_DURATION;
+        scoreDisplay.textContent = '0';
+        timeDisplay.textContent = GAME_DURATION.toString();
+        smokeParticles = [];
+        car.x = canvas.width / 2;
+        car.y = canvas.height / 2;
+        car.speed = 0;
+        car.angle = 0;
     }
 
     function endGame() {
@@ -237,14 +221,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function gameLoop() {
-        // Очистка холста
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Рисуем трассу
         track.draw();
-        
-        // Обновляем и рисуем игровые объекты
         car.update();
         updateSmoke();
         drawSmoke();
@@ -252,26 +232,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateHighscores(score) {
-        highscores.push(score);
-        highscores.sort((a, b) => b - a);
-        highscores = highscores.slice(0, 5);
+        highscores = [...new Set([...highscores, score])]
+            .sort((a, b) => b - a)
+            .slice(0, 5);
         localStorage.setItem(HIGHSCORES_KEY, JSON.stringify(highscores));
     }
-
-    function showHighscores() {
-        // Исправленная версия без дублирования номеров
-        highscoresList.innerHTML = '';
-        highscores.forEach((score, index) => {
-            const li = document.createElement('li');
-            li.textContent = `${index + 1}. ${score} очков`;
-            highscoresList.appendChild(li);
-        });
-    }
-
-    // Инициализация игры
+function showHighscores() {
+    highscores = JSON.parse(localStorage.getItem(HIGHSCORES_KEY)) || [];
+    highscoresList.innerHTML = '';
+    
+    highscores.forEach((score, i) => {
+        const li = document.createElement('li');
+        
+        // Создаем span для номера
+        const numberSpan = document.createElement('span');
+        numberSpan.textContent = `${i + 1}. `;
+        numberSpan.style.fontWeight = 'bold';
+        
+        // Создаем span для очков
+        const scoreSpan = document.createElement('span');
+        scoreSpan.textContent = `${Number(score).toFixed(2)} очков`;
+        
+        li.appendChild(numberSpan);
+        li.appendChild(scoreSpan);
+        highscoresList.appendChild(li);
+    });
+}
+    // Инициализация
     startButton.addEventListener('click', startGame);
     restartButton.addEventListener('click', startGame);
-
-    // Показываем стартовый экран
     showHighscores();
+
+    // Кнопка выхода
+document.getElementById('exitButton').addEventListener('click', function() {
+    // Замените URL на нужный вам
+    window.location.href = '../toyota-page/tictacoe.html'; 
+});
 });

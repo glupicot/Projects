@@ -112,3 +112,41 @@ button:hover {
 #startButton {
     animation: pulse 1.5s infinite;
 }
+/* Кнопка выхода */
+#exitButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff6421;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: 'Press Start 2P', cursive;
+    z-index: 10;
+}
+
+#exitButton:hover {
+    background-color: #ff8533;
+}
+
+.game-button {
+    background-color: #ff6421;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.game-button:hover {
+    background-color: #ff8533;
+}
+
+
+
+

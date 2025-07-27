@@ -343,7 +343,7 @@ h1{
     font-weight: 400;
     font-size: 16px;
     line-height: 140%;
-    margin-left:62px;
+    margin-left:42px;
 
 }
 
@@ -729,4 +729,188 @@ width:178px;
 
 body.modal-open {
     overflow: hidden;
+}
+.tasks-counter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  background-color: var(--color-task-dark-blue);
+  border-radius: 8px;
+  padding: 8px;
+  margin-left: 12px;
+  font-family: "Unbounded";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+}
+
+.now-my-tasks h1,
+.time-out h1 {
+  display: flex;
+  align-items: center;
+}
+
+.tasks-container {
+  margin-top: 16px;
+}
+ .task-count {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-task-dark-blue);
+            border-radius: 8px;
+            padding: 8px;
+            margin-left: 12px;
+            font-family: "Unbounded";
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--color-white);
+        }
+        
+        .total-count {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-task-dark-blue);
+            border-radius: 8px;
+            padding: 8px;
+            margin-left: 12px;
+            font-family: "Unbounded";
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--color-white);
+        }
+        
+        .collapse-btn {
+            cursor: pointer;
+            margin-left: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .now-my-tasks.collapsed .tasks-container,
+        .time-out.collapsed .tasks-container {
+            display: none;
+        }
+        
+        .now-my-tasks.collapsed .collapse-btn svg,
+        .time-out.collapsed .collapse-btn svg {
+            transform: rotate(-90deg);
+        }
+        
+        .task-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+        }
+        
+        .task-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .task-arrow {
+            cursor: pointer;
+        }
+        
+        .task.expanded .task-description {
+            max-height: 500px;
+            padding: 16px 32px;
+        }
+        .overlay-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+.overlay-backdrop.visible {
+    display: block;
+}
+/* Добавьте эти стили в ваш CSS файл */
+
+/* Плавное раскрытие задач */
+.task-description {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+  opacity: 0;
+  max-height: 0;
+}
+
+.task-description p {
+  margin: 0;
+  padding: 16px 0;
+}
+
+/* Фикс для сохранения позиции при скрытии блоков */
+.main-content {
+  position: relative;
+}
+
+.now-my-tasks, .time-out {
+  margin-bottom: 32px;
+}
+
+.task-tittle-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.task-tittle-top h1 {
+  margin: 0;
+}
+
+.all-my-tasks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+/* Фикс для кнопки добавления задачи */
+.add-new-tasks {
+  margin-left: auto;
+}
+
+/* Фикс для скролла */
+.main-menu-page {
+  overflow-y: auto;
+  height: calc(100vh - 46px);
+  padding-top: 46px;
+  will-change: transform;
+}
+
+/* Фикс для кнопок сворачивания */
+.collapse-btn {
+  margin-left: auto !important;
+  float: none !important;
+}
+
+/* Стили для редактируемой задачи */
+.task.editing {
+  background-color: rgba(103, 157, 255, 0.1);
 }

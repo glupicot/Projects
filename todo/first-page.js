@@ -15,51 +15,34 @@ document.addEventListener("DOMContentLoaded", function() {
     creationDateInput: document.querySelector('input[type="date"]'),
     dueDateInput: document.getElementById('dueDate'),
     taskSprintInput: document.querySelector('input[type="sprint"]'),
-    datePlaceholder: document.querySelector('.date-placeholder')
+    datePlaceholder: document.querySelector('.date-placeholder'),
+    nowTasksTitle: document.querySelector('.now-my-tasks .task-tittle-top'),
+    timeOutTasksTitle: document.querySelector('.time-out .task-tittle-top'),
+    allTasksTitle: document.querySelector('.all-my-tasks h1'),
+    overlayBackdrop: document.createElement('div')
   };
 
-  // Загрузка задач из localStorage или начальные данные
-  let tasks = JSON.parse(localStorage.getItem('tasks')) || [
-    {
-      title: "Адаптивная верстка лендинга",
-      description: "Лалала я люблю чай",
-      dueDate: "2025-05-22",
-      sprint: "Работа",
-      completed: false,
-      expanded: false
-    },
-    {
-      title: "Интеграция с REST API",
-      description: "Подключить фронтенд-приложение к внешнему API для получения и отображения списка товаров. Добавить лоадер при загрузке и обработку ошибок сети.",
-      dueDate: new Date().toISOString().split('T')[0],
-      sprint: "Семья",
-      completed: false,
-      expanded: false
-    },
-    {
-      title: "Настройка маршрутизации в SPA",
-      description: "",
-      dueDate: new Date().toISOString().split('T')[0],
-      sprint: "Учеба",
-      completed: false,
-      expanded: false
-    },
-    {
-      title: "Улучшение производительности страницы",
-      description: "Провести аудит производительности с помощью Lighthouse. Оптимизировать изображения, настроить lazy loading и минимизировать количество ререндеров компонентов.",
-      dueDate: new Date().toISOString().split('T')[0],
-      sprint: "Работа",
-      completed: false,
-      expanded: false
-    }
-  ];
+  // Основной массив задач - единственный источник истины
+  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  let currentEditingTaskId = null;
+
+  // Добавляем backdrop в DOM
+  DOM.overlayBackdrop.className = 'overlay-backdrop';
+  document.body.appendChild(DOM.overlayBackdrop);
+
+  // Генератор уникальных ID для задач
+  function generateId() {
+    return Date.now().toString();
+  }
 
   // Инициализация приложения
   function init() {
     initMenu();
     initTaskForm();
-    syncTasks();
+    renderAllTasks();
     initDatePlaceholder();
+    updateTasksCount();
+    setupCollapseButtons();
   }
 
   // Меню
@@ -71,25 +54,47 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Форма задачи
   function initTaskForm() {
-    DOM.addNewTaskBtn.addEventListener('click', showTaskForm);
+    DOM.addNewTaskBtn.addEventListener('click', () => {
+      currentEditingTaskId = null;
+      showTaskForm();
+    });
     DOM.saveBtn.addEventListener('click', saveTask);
     DOM.cancelBtn.addEventListener('click', hideTaskForm);
     DOM.backBtn.addEventListener('click', hideTaskForm);
+    DOM.overlayBackdrop.addEventListener('click', hideTaskForm);
   }
 
   function showTaskForm() {
     DOM.overlayContent.style.display = 'block';
+    DOM.overlayBackdrop.classList.add('visible');
+    document.body.classList.add('modal-open');
     DOM.creationDateInput.value = new Date().toISOString().split('T')[0];
-    DOM.dueDateInput.value = '';
-    DOM.datePlaceholder.style.display = 'block';
+    
+    if (currentEditingTaskId) {
+      // Заполняем форму данными редактируемой задачи
+      const task = tasks.find(t => t.id === currentEditingTaskId);
+      if (task) {
+        DOM.taskTitleInput.value = task.title;
+        DOM.taskDescriptionInput.value = task.description;
+        DOM.dueDateInput.value = task.dueDate;
+        DOM.taskSprintInput.value = task.sprint;
+        DOM.datePlaceholder.style.display = 'none';
+      }
+    } else {
+      // Очищаем форму для новой задачи
+      DOM.taskTitleInput.value = '';
+      DOM.taskDescriptionInput.value = '';
+      DOM.dueDateInput.value = '';
+      DOM.taskSprintInput.value = '';
+      DOM.datePlaceholder.style.display = 'block';
+    }
   }
 
   function hideTaskForm() {
     DOM.overlayContent.style.display = 'none';
-    DOM.taskTitleInput.value = '';
-    DOM.taskDescriptionInput.value = '';
-    DOM.dueDateInput.value = '';
-    DOM.taskSprintInput.value = '';
+    DOM.overlayBackdrop.classList.remove('visible');
+    document.body.classList.remove('modal-open');
+    currentEditingTaskId = null;
   }
 
   function saveTask() {
@@ -97,122 +102,123 @@ document.addEventListener("DOMContentLoaded", function() {
     const dueDate = DOM.dueDateInput.value;
     if (!title || !dueDate) return alert('Заполните заголовок и дату');
 
-    tasks.push({
+    const taskData = {
       title: title,
       description: DOM.taskDescriptionInput.value.trim(),
       dueDate: dueDate,
       sprint: DOM.taskSprintInput.value.trim() || 'Без спринта',
       completed: false,
       expanded: false
-    });
+    };
 
-    saveAndSync();
+    if (currentEditingTaskId) {
+      // Обновляем существующую задачу
+      const index = tasks.findIndex(t => t.id === currentEditingTaskId);
+      if (index !== -1) {
+        tasks[index] = { ...tasks[index], ...taskData };
+      }
+    } else {
+      // Добавляем новую задачу
+      taskData.id = generateId();
+      tasks.push(taskData);
+    }
+
+    saveToLocalStorage();
+    renderAllTasks();
     hideTaskForm();
   }
 
-  // Работа с задачами
-  function setupTaskEvents(taskElement, taskData) {
-    const completeIcon = taskElement.querySelector('.complete-icon');
-    const toggleIcon = taskElement.querySelector('.toggle-icon');
-    const deleteBtn = taskElement.querySelector('.delete');
-    const header = taskElement.querySelector('.task-header');
-
-    completeIcon.addEventListener('click', function(e) {
-      e.stopPropagation();
-      taskData.completed = !taskData.completed;
-      saveAndSync();
-    });
-
-    deleteBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (confirm('Удалить задачу?')) {
-        tasks = tasks.filter(t => t !== taskData);
-        saveAndSync();
-      }
-    });
-
-    toggleIcon.addEventListener('click', function(e) {
-      e.stopPropagation();
-      taskData.expanded = !taskData.expanded;
-      saveAndSync();
-    });
-
-    header.addEventListener('click', function(e) {
-      if (![completeIcon, toggleIcon, deleteBtn].includes(e.target)) {
-        taskData.expanded = !taskData.expanded;
-        saveAndSync();
-      }
-    });
-  }
-
-  function updateTaskState(taskElement, taskData) {
-    const isCompleted = taskData.completed;
-    const isExpanded = taskData.expanded;
-
-    // Обновление иконок
-    taskElement.querySelector('.complete-icon').src = isCompleted 
-      ? "../todo/assets/icons/tasks-check.svg" 
-      : "../todo/assets/icons/tasks-ellipse.svg";
-
-    taskElement.querySelector('.toggle-icon').src = isExpanded
-      ? "../todo/assets/icons/tasks-chevron-down.svg"
-      : "../todo/assets/icons/tasks-chevron-right.svg";
-
-    // Обновление текста
-    const textElements = [
-      taskElement.querySelector('.task-name'),
-      taskElement.querySelector('.day'),
-      taskElement.querySelector('.sprint')
-    ];
-    
-    textElements.forEach(el => {
-      if (el) {
-        el.style.color = isCompleted ? '#656896' : '';
-        el.style.textDecoration = isCompleted ? 'line-through' : '';
-      }
-    });
-
-    // Обновление описания
-    const description = taskElement.querySelector('.task-description');
-    if (description) {
-      description.style.maxHeight = isExpanded 
-        ? description.scrollHeight + "px" 
-        : "0";
-    }
-  }
-
-  // Синхронизация данных
-  function saveAndSync() {
+  // Сохранение в localStorage
+  function saveToLocalStorage() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    syncTasks();
+    updateTasksCount();
   }
 
-  function syncTasks() {
-    if (!DOM.nowMyTasks || !DOM.timeOutTasks) return;
+  // Обновление счетчиков задач
+  function updateTasksCount() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
-    DOM.nowMyTasks.innerHTML = '';
-    const timeOutContainer = DOM.timeOutTasks.querySelector('.task-container') || DOM.timeOutTasks;
-    timeOutContainer.innerHTML = '';
+    const currentTasks = tasks.filter(task => {
+      const taskDate = new Date(task.dueDate);
+      return !task.completed && taskDate >= today;
+    }).length;
+    
+    const overdueTasks = tasks.filter(task => {
+      const taskDate = new Date(task.dueDate);
+      return !task.completed && taskDate < today;
+    }).length;
+
+    updateSectionCounter(DOM.nowTasksTitle.querySelector('h1'), currentTasks);
+    updateSectionCounter(DOM.timeOutTasksTitle.querySelector('h1'), overdueTasks);
+    updateTotalCounter(tasks.length);
+  }
+
+  function updateSectionCounter(titleElement, count) {
+    let counter = titleElement.querySelector('.task-count');
+    if (!counter) {
+      counter = document.createElement('span');
+      counter.className = 'task-count';
+      titleElement.appendChild(counter);
+    }
+    counter.textContent = count;
+  }
+
+  function updateTotalCounter(count) {
+    if (!DOM.allTasksTitle) return;
+    
+    let counter = DOM.allTasksTitle.querySelector('.total-counter');
+    if (!counter) {
+      counter = document.createElement('span');
+      counter.className = 'total-counter task-count';
+      DOM.allTasksTitle.appendChild(counter);
+    }
+    counter.textContent = count;
+  }
+
+  // Рендер всех задач
+  function renderAllTasks() {
+    renderTasksSection(DOM.nowMyTasks, false); // Текущие задачи
+    renderTasksSection(DOM.timeOutTasks, true); // Просроченные задачи
+  }
+
+  // Рендер секции задач
+  function renderTasksSection(container, isOverdueSection) {
+    if (!container) return;
+    
+    let tasksContainer = container.querySelector('.tasks-container');
+    if (!tasksContainer) {
+      tasksContainer = document.createElement('div');
+      tasksContainer.className = 'tasks-container';
+      container.appendChild(tasksContainer);
+    }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    tasks.forEach(task => {
-      const taskElement = createTaskElement(task);
+    // Фильтруем задачи для этой секции
+    const sectionTasks = tasks.filter(task => {
       const taskDate = new Date(task.dueDate);
-      const isOverdue = taskDate < today && !task.completed;
-
-      if (isOverdue) {
-        timeOutContainer.appendChild(taskElement);
-      } else {
-        DOM.nowMyTasks.appendChild(taskElement);
-      }
-
-      setupTaskEvents(taskElement, task);
-      updateTaskState(taskElement, task);
+      const isOverdue = taskDate < today;
+      return isOverdueSection ? isOverdue : !isOverdue;
     });
+
+    // Сохраняем позицию скролла
+    const scrollPosition = document.querySelector('.main-menu-page').scrollTop;
+
+    // Очищаем и перерисовываем
+    tasksContainer.innerHTML = '';
+    sectionTasks.forEach(task => {
+      const taskElement = createTaskElement(task);
+      tasksContainer.appendChild(taskElement);
+      setupTaskEvents(taskElement, task);
+    });
+
+    // Восстанавливаем позицию скролла
+    document.querySelector('.main-menu-page').scrollTop = scrollPosition;
   }
 
+  // Создание элемента задачи
   function createTaskElement(task) {
     const date = new Date(task.dueDate);
     const today = new Date();
@@ -224,69 +230,166 @@ document.addEventListener("DOMContentLoaded", function() {
     else if (date.toDateString() === tomorrow.toDateString()) displayDate = 'Завтра';
     else displayDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth()+1).toString().padStart(2, '0')}.${date.getFullYear()}`;
 
-    const isOverdue = date < today && !task.completed;
+    const isOverdue = date < today;
     const descriptionHtml = task.description ? task.description.replace(/\n/g, '<br>') : '';
 
     const taskElement = document.createElement('div');
     taskElement.className = 'task';
+    taskElement.dataset.id = task.id;
     if (task.completed) taskElement.classList.add('completed');
     if (task.expanded) taskElement.classList.add('expanded');
 
     taskElement.innerHTML = `
       <div class="task-header">
-        <img src="../todo/assets/icons/tasks-ellipse.svg" class="complete-icon" alt="Статус">
-        <span class="task-name">${task.title}</span>
-        <img src="../todo/assets/icons/tasks-chevron-down.svg" class="toggle-icon" alt="Развернуть">
+        <img src="../todo/assets/icons/${task.completed ? 'tasks-check' : 'tasks-ellipse'}.svg" class="complete-icon" alt="Статус">
+        <span class="task-name" style="${task.completed ? 'text-decoration: line-through; color: #656896' : ''}">${task.title}</span>
+        <img src="../todo/assets/icons/tasks-${task.expanded ? 'chevron-down' : 'chevron-right'}.svg" class="toggle-icon" alt="Развернуть">
         <img src="../todo/assets/icons/delete.svg" class="delete" alt="Удалить">
       </div>
-      <div class="task-description">
+      <div class="task-description" style="display: ${task.expanded ? 'block' : 'none'}; max-height: ${task.expanded ? '100%' : '0'}; opacity: ${task.expanded ? '1' : '0'}; transition: max-height 0.3s ease, opacity 0.3s ease">
         <p>${descriptionHtml}</p>
       </div>
       <div class="day-sprint">
-        <h2 class="day ${isOverdue ? 'overdue' : ''}">${displayDate}</h2>
+        <h2 class="day ${isOverdue ? 'overdue' : ''}" style="${task.completed ? 'text-decoration: line-through; color: #656896' : ''}">${displayDate}</h2>
         <img class="day-img" src="../todo/assets/icons/point.svg">
-        <h2 class="sprint">${task.sprint}</h2>
-        <img src="../todo/assets/icons/tasks-repeat-on.svg" class="repeat-icon">
+        <h2 class="sprint" style="${task.completed ? 'text-decoration: line-through; color: #656896' : ''}">${task.sprint}</h2>
+        <img src="../todo/assets/icons/tasks-repeat-${task.completed ? 'off' : 'on'}.svg" class="repeat-icon">
       </div>
     `;
     
     return taskElement;
   }
 
+  // Настройка событий для задачи
+  function setupTaskEvents(taskElement, taskData) {
+    const completeIcon = taskElement.querySelector('.complete-icon');
+    const toggleIcon = taskElement.querySelector('.toggle-icon');
+    const deleteBtn = taskElement.querySelector('.delete');
+    const header = taskElement.querySelector('.task-header');
+
+    completeIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const taskIndex = tasks.findIndex(t => t.id === taskData.id);
+      if (taskIndex !== -1) {
+        tasks[taskIndex].completed = !tasks[taskIndex].completed;
+        saveToLocalStorage();
+        renderAllTasks();
+      }
+    });
+
+    deleteBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (confirm('Удалить задачу?')) {
+        tasks = tasks.filter(t => t.id !== taskData.id);
+        saveToLocalStorage();
+        renderAllTasks();
+      }
+    });
+
+    toggleIcon.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const taskIndex = tasks.findIndex(t => t.id === taskData.id);
+      if (taskIndex !== -1) {
+        tasks[taskIndex].expanded = !tasks[taskIndex].expanded;
+        saveToLocalStorage();
+        renderAllTasks();
+      }
+    });
+
+    header.addEventListener('click', function(e) {
+      if (![completeIcon, toggleIcon, deleteBtn].includes(e.target)) {
+        currentEditingTaskId = taskData.id;
+        showTaskForm();
+      }
+    });
+  }
+
+  // Настройка кнопок сворачивания
+  function setupCollapseButtons() {
+    [DOM.nowTasksTitle, DOM.timeOutTasksTitle].forEach(titleContainer => {
+      if (!titleContainer) return;
+      
+      const container = titleContainer.closest('.now-my-tasks, .time-out');
+      if (!container) return;
+      
+      // Удаляем старую кнопку если есть
+      const oldBtn = titleContainer.querySelector('.collapse-btn');
+      if (oldBtn) oldBtn.remove();
+      
+      // Создаем новую кнопку
+      const collapseBtn = document.createElement('div');
+      collapseBtn.className = 'collapse-btn open-tasks-icon';
+      collapseBtn.style.cssText = `
+        width: 24px;
+        height: 24px;
+        background-color: var(--color-task-dark-blue);
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        margin-left: auto;
+      `;
+      
+      collapseBtn.innerHTML = `
+        <img src="../todo/assets/icons/tasks-chevron-down.svg" 
+             class="collapse-icon" 
+             style="width: 100%; height: 100%;">
+      `;
+      
+      titleContainer.appendChild(collapseBtn);
+      
+      // Обработчик события
+      collapseBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const tasksContainer = container.querySelector('.tasks-container');
+        const isCollapsed = tasksContainer.style.display === 'none';
+        
+        tasksContainer.style.display = isCollapsed ? 'block' : 'none';
+        const iconPath = isCollapsed ? 
+          '../todo/assets/icons/tasks-chevron-down.svg' : 
+          '../todo/assets/icons/tasks-chevron-right.svg';
+        collapseBtn.querySelector('img').src = iconPath;
+        
+        // Сохраняем состояние
+        const sectionType = container.classList.contains('now-my-tasks') ? 
+          'currentCollapsed' : 'overdueCollapsed';
+        localStorage.setItem(sectionType, !isCollapsed);
+      });
+      
+      // Восстанавливаем состояние
+      const sectionType = container.classList.contains('now-my-tasks') ? 
+        'currentCollapsed' : 'overdueCollapsed';
+      const isCollapsed = localStorage.getItem(sectionType) === 'true';
+      if (isCollapsed) {
+        container.querySelector('.tasks-container').style.display = 'none';
+        collapseBtn.querySelector('img').src = '../todo/assets/icons/tasks-chevron-right.svg';
+      }
+    });
+  }
+
   // Плейсхолдер для даты
   function initDatePlaceholder() {
     if (!DOM.dueDateInput || !DOM.datePlaceholder) return;
 
-    const dateDisplay = document.createElement('span');
-    dateDisplay.className = 'custom-date-display';
-    dateDisplay.style.cssText = `
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--color-white);
-      font-family: "VelaSans";
-      font-weight: 600;
-      font-size: 16px;
-      pointer-events: none;
-      width: calc(100% - 50px);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    `;
-    DOM.dueDateInput.parentNode.insertBefore(dateDisplay, DOM.dueDateInput.nextSibling);
-
+    DOM.dueDateInput.style.color = 'transparent';
+    
     DOM.dueDateInput.addEventListener('change', function() {
       if (this.value) {
         const date = new Date(this.value);
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        dateDisplay.textContent = `${day}.${month}.${date.getFullYear()}`;
+        const year = date.getFullYear();
+        
+        this.style.color = 'var(--color-white)';
+        this.value = `${year}-${month}-${day}`;
         DOM.datePlaceholder.style.display = 'none';
       } else {
-        dateDisplay.textContent = '';
+        this.style.color = 'transparent';
         DOM.datePlaceholder.style.display = 'block';
       }
+    });
+
+    DOM.dueDateInput.addEventListener('focus', function() {
+      this.style.color = 'transparent';
     });
   }
 

@@ -1,102 +1,126 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const cars = [
+    const carModels = [
         { 
-            img: 'toyota-corolla-ceres.png',
+            img: 'toyota-corolla-ceres.png', 
             name: 'Toyota Corolla Ceres',
-            description: 'Элегантный седан с "стеклянной крышей"',
-            link: 'tictactoe.html'
+            desc: 'Роскошная версия Corolla с кузовом хардтоп'
         },
         { 
-            img: 'toyota-carina-ed.png',
+            img: 'toyota-carina-ed.png', 
             name: 'Toyota Carina ED',
-            description: 'Футуристичный дизайн 90-х',
-            link: 'garage.html'
+            desc: 'Футуристичный дизайн и передовые технологии 90-х'
         },
         { 
-            img: 'toyota-chaser.png',
+            img: 'toyota-chaser.png', 
             name: 'Toyota Chaser',
-            description: 'Легенда дрифта и тюнинга',
-            link: 'chaser.html'
+            desc: 'Легенда дрифта с рядной шестеркой 1JZ'
         },
         { 
-            img: 'toyota-sprinter-marino.png',
+            img: 'toyota-sprinter-marino.png', 
             name: 'Toyota Sprinter Marino',
-            description: 'Роскошь в компактном кузове',
-            link: 'marino.html'
+            desc: 'Элегантный купе-седан с атмосферным характером'
         },
         { 
-            img: 'toyota-sprinter-trueno.png',
+            img: 'toyota-sprinter-trueno.png', 
             name: 'Toyota Sprinter Trueno',
-            description: 'Знаменитые жучьи фары из Initial D',
-            link: 'trueno.html'
+            desc: 'Знаменитый AE86 из Initial D'
         },
         { 
-            img: 'toyota-crown.png',
+            img: 'toyota-crown.png', 
             name: 'Toyota Crown',
-            description: 'Японский бизнес-класс',
-            link: 'crown.html'
+            desc: 'Флагманский седан для истинных ценителей'
         },
         { 
-            img: 'toyota-soarer.png',
+            img: 'toyota-soarer.png', 
             name: 'Toyota Soarer',
-            description: 'Гранд туреро с технологиями будущего',
-            link: 'soarer.html'
+            desc: 'Роскошное GT-купе с технологиями будущего'
         },
         { 
-            img: 'toyota-vista.png',
+            img: 'toyota-vista.png', 
             name: 'Toyota Vista',
-            description: 'Народный любимец',
-            link: 'vista.html'
+            desc: 'Практичный седан для ежедневных поездок'
         }
     ];
 
     const container = document.querySelector('.cars-container');
-    const vw = window.innerWidth / 100;
-    const vh = window.innerHeight / 100;
+    const clickArea = document.querySelector('.click-area');
+    const title = document.querySelector('.title');
+    const message = document.querySelector('.all-gone-message');
+    let carsLeft = carModels.length;
 
-    cars.forEach((car, index) => {
+    // Создаем машины
+    carModels.forEach(model => {
         const carElement = document.createElement('div');
         carElement.className = 'car-wrapper';
         
         const img = document.createElement('img');
-        img.src = `assets/icons/${car.img}`;
+        img.src = `../toyota-page/assets/icons/${model.img}`;
         img.className = 'car';
-        img.alt = car.name;
+        img.alt = model.name;
         
         const tooltip = document.createElement('div');
         tooltip.className = 'car-tooltip';
-        tooltip.innerHTML = `<h3>${car.name}</h3><p>${car.description}</p>`;
+        tooltip.innerHTML = `<h3>${model.name}</h3><p>${model.desc}</p>`;
         
         carElement.appendChild(img);
         carElement.appendChild(tooltip);
         
-        // Случайное позиционирование
-        const left = 10 + Math.random() * 80;
-        const top = 10 + Math.random() * 70;
-        
-        // Анимации
-        const animationType = Math.random() > 0.5 ? 'float' : 'drift';
-        const duration = 3 + Math.random() * 4;
-        const delay = Math.random() * 2;
-        
-        carElement.style.left = `${left}%`;
-        carElement.style.top = `${top}%`;
-        carElement.style.animation = `${animationType} ${duration}s ${delay}s infinite`;
+        // Позиционирование
+        carElement.style.left = `${10 + Math.random() * 80}%`;
+        carElement.style.top = `${10 + Math.random() * 70}%`;
         carElement.style.width = `${15 + Math.random() * 10}vw`;
+        carElement.style.animationDelay = `${Math.random() * 2}s`;
         
-        // Клик для перехода
-        carElement.addEventListener('click', () => {
-            window.location.href = car.link;
+        // Обработчик клика
+        carElement.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Улетает в случайном направлении
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 150 + Math.random() * 100;
+            
+            this.style.transform = `
+                translate(${Math.cos(angle) * distance}vw, ${Math.sin(angle) * distance}vh)
+                rotate(${angle}rad)
+            `;
+            this.style.opacity = '0';
+            this.style.pointerEvents = 'none';
+            
+            // Удаляем через время анимации
+            setTimeout(() => {
+                this.remove();
+                carsLeft--;
+                
+                if (carsLeft === 0) {
+                    title.style.opacity = '0';
+                    setTimeout(() => message.classList.add('show'), 500);
+                }
+            }, 800);
         });
         
         container.appendChild(carElement);
     });
 
-    // Параллакс-эффект
-    window.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        document.querySelector('.grass-bg').style.backgroundPosition = 
-            `${50 + x * 10}% ${50 + y * 10}%`;
+    // Клик по пустой области
+    clickArea.addEventListener('click', function(e) {
+        if (e.target === this) { // Только если кликнули именно на область, а не на машину
+            const cars = [...document.querySelectorAll('.car-wrapper')];
+            if (cars.length === 0) return;
+            
+            // Находим ближайшую машину
+            const closestCar = cars.reduce((closest, car) => {
+                const rect = car.getBoundingClientRect();
+                const carCenter = {
+                    x: rect.left + rect.width/2,
+                    y: rect.top + rect.height/2
+                };
+                const distance = Math.hypot(e.clientX - carCenter.x, e.clientY - carCenter.y);
+                return distance < closest.distance ? {car, distance} : closest;
+            }, {car: null, distance: Infinity}).car;
+            
+            if (closestCar) {
+                closestCar.click();
+            }
+        }
     });
 });
