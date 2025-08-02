@@ -17,13 +17,14 @@
     </header>
     
     <main class="vhs-main">
-        <div class="vhs-player-container">
-            <div class="vhs-player">
-                <div class="vhs-screen">
-                    <video class="vhs-video" loop>
-                        <source src="../toyota-page/assets/videos/toyota-ad-jp.mp4" type="video/mp4">
-                        Ваш браузер не поддерживает видео
-                    </video>
+<div class="vhs-player-container">
+    <div class="crt-frame">
+        <div class="vhs-screen">
+            <video class="vhs-video" loop>
+                <source src="assets/videos/toyota-ad-jp.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
                     <div class="vhs-static"></div>
                 </div>
                 
@@ -38,11 +39,6 @@
                     <button class="vhs-button eject" title="Eject"><i class="fas fa-eject"></i></button>
                 </div>
                 
-                <div class="vhs-cassette">
-                    <img src="../toyota-page/assets/icons/vhs-cassette.png" alt="VHS Cassette" loading="lazy">
-                    <div class="cassette-label">TOYOTA 1994</div>
-                    <div class="reels"></div>
-                </div>
             </div>
         </div>
         
@@ -63,6 +59,12 @@
         <div class="vhs-date">©1994 TOYOTA MOTOR CORPORATION</div>
         <div class="vhs-counter">VISITOR NUMBER: <span id="counter">00001</span></div>
     </footer>
+
+<div class="vhs-cassette-fixed">
+    <img src="../toyota-page/assets/icons/vhs-cassette.png" alt="VHS Cassette" loading="lazy">
+    <div class="cassette-label">TOYOTA 1994</div>
+    <div class="reels"></div>
+</div>
 
     <script src="../toyota-page/vintage.js"></script>
 </body>

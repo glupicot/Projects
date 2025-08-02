@@ -155,7 +155,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(1.1) contrast(1.3) saturate(1.5);
+    filter: none;
 }
 
 .vhs-static {
@@ -232,18 +232,24 @@ body {
     box-shadow: 0 0 5px #0f0;
 }
 
-.vhs-cassette {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 100px;
-    z-index: 3;
+/* Фиксированная кассета (маленький размер) */
+.vhs-cassette-fixed {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 100px; /* Маленький размер */
+    height: auto;
+    z-index: 1000;
     filter: drop-shadow(0 0 5px rgba(0,255,0,0.7));
+    animation: cassette-float 3s ease-in-out infinite;
+    transform-origin: center;
 }
 
-.vhs-cassette img {
+.vhs-cassette-fixed img {
     width: 100%;
     height: auto;
+    display: block;
+    filter: sepia(0.6) hue-rotate(10deg) contrast(1.1) brightness(1.1);
 }
 
 .cassette-label {
@@ -251,28 +257,58 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(90deg);
-    font-size: 12px;
+    font-size: 10px; /* Уменьшенный размер текста */
     color: #fff;
     text-shadow: 0 0 3px #000;
     white-space: nowrap;
+    font-family: 'Courier New', monospace;
 }
 
 .reels {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 60px;
-    height: 40px;
-    background: radial-gradient(circle, #333 10%, transparent 10%),
-                radial-gradient(circle, #333 10%, transparent 10%);
-    background-size: 40px 40px;
-    background-position: 0 0, 20px 20px;
+    top: 15px;
+    left: 15px;
+    width: 40px;
+    height: 30px;
+    background: 
+        radial-gradient(circle, #333 10%, transparent 10%),
+        radial-gradient(circle, #333 10%, transparent 10%);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
     animation: reels-rotate 5s linear infinite;
 }
 
+/* Анимация кассеты */
+@keyframes cassette-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.02); }
+}
+
 @keyframes reels-rotate {
-    0% { background-position: 0 0, 20px 20px; }
-    100% { background-position: 0 40px, 20px 60px; }
+    0% { background-position: 0 0, 15px 15px; }
+    100% { background-position: 0 30px, 15px 45px; }
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .vhs-cassette-fixed {
+        width: 70px;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .cassette-label {
+        font-size: 8px;
+    }
+    
+    .reels {
+        top: 10px;
+        left: 10px;
+        width: 30px;
+        height: 20px;
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+    }
 }
 
 /* Gallery styles */
@@ -410,4 +446,18 @@ img.no-filter {
 /* Эффект "вставки кассеты" */
 .vhs-cassette {
     transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* CRT Frame */
+.crt-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%; /* 4:3 aspect ratio */
+    background-size: contain;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 
+        0 0 0 5px #333,
+        0 0 30px rgba(0, 255, 0, 0.6),
+        inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
