@@ -431,6 +431,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         opacity: ${task.expanded ? '1' : '0'};
         transition: all 0.4s ease;
         overflow: hidden;
+        padding-left: 30px; /* Добавляем отступ слева как у заголовка */
       ">
         <p>${descriptionHtml}</p>
       </div>
