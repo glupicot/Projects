@@ -64,15 +64,20 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
   }
 
-  // Загружаем задачи
+  // Загружаем задачи - СНАЧАЛА из localStorage, ПОТОМ синхронизируем с сервером
   let tasks = [];
   let currentEditingTaskId = null;
+
+  // Загружаем из localStorage как основную версию
+  const localTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  console.log("Задачи из localStorage:", localTasks);
 
   try {
     const serverTodos = await TodoAPI.getAllTodos();
     console.log("Данные с сервера:", serverTodos);
     
-    tasks = serverTodos.map(todo => ({
+    // Объединяем данные: приоритет у localStorage, но добавляем новые задачи с сервера
+    const serverTasks = serverTodos.map(todo => ({
       id: normalizeId(todo._id || todo.id),
       title: todo.name,
       description: todo.description,
@@ -81,12 +86,46 @@ document.addEventListener("DOMContentLoaded", async function() {
       completed: todo.completed,
       expanded: false
     }));
+
+    // Создаем карту задач из localStorage для быстрого поиска
+    const localTasksMap = new Map();
+    localTasks.forEach(task => {
+      localTasksMap.set(normalizeId(task.id), task);
+    });
+
+    // Объединяем: берем задачи из localStorage, если они есть, иначе с сервера
+    tasks = serverTasks.map(serverTask => {
+      const localTask = localTasksMap.get(normalizeId(serverTask.id));
+      if (localTask) {
+        // Сохраняем наши локальные изменения (дату, описание и т.д.)
+        return {
+          ...serverTask, // базовые данные с сервера
+          dueDate: localTask.dueDate, // наша измененная дата
+          description: localTask.description, // наше измененное описание
+          sprint: localTask.sprint, // наш измененный спринт
+          expanded: localTask.expanded || false // наше состояние развертывания
+        };
+      }
+      return serverTask;
+    });
+
+    // Добавляем задачи, которые есть в localStorage но нет на сервере
+    localTasks.forEach(localTask => {
+      const exists = tasks.some(task => normalizeId(task.id) === normalizeId(localTask.id));
+      if (!exists) {
+        tasks.push(localTask);
+      }
+    });
     
-    console.log("Задачи после преобразования:", tasks);
+    console.log("Объединенные задачи:", tasks);
+    
   } catch (error) {
-    console.error("Ошибка загрузки задач:", error);
-    tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    console.error("Ошибка загрузки задач с сервера, используем localStorage:", error);
+    tasks = localTasks;
   }
+
+  // Сохраняем объединенные задачи обратно в localStorage
+  saveToLocalStorage();
 
   // Инициализация
   function init() {
@@ -198,7 +237,9 @@ document.addEventListener("DOMContentLoaded", async function() {
           taskData.completed = existingTask.completed;
         }
 
-        await TodoAPI.updateTodo(normalizeId(currentEditingTaskId), taskData);
+        // ОБНОВЛЯЕМ НА СЕРВЕРЕ ВСЕ ПОЛЯ, ВКЛЮЧАЯ ДАТУ
+        const updateResult = await TodoAPI.updateTodo(normalizeId(currentEditingTaskId), taskData);
+        console.log("Результат обновления на сервере:", updateResult);
         
         const index = tasks.findIndex(t => normalizeId(t.id) === normalizeId(currentEditingTaskId));
         if (index !== -1) {
@@ -206,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             ...tasks[index],
             title: taskData.name,
             description: taskData.description,
-            dueDate: taskData.dueDate,
+            dueDate: taskData.dueDate, // Сохраняем новую дату
             sprint: taskData.sprint
           };
         }
@@ -231,7 +272,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       
     } catch (error) {
       console.error("Ошибка сохранения задачи:", error);
-      alert("Ошибка сохранения задачи");
+      alert("Ошибка сохранения задачи: " + error.message);
     }
   }
 
