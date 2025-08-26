@@ -430,7 +430,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         max-height: ${task.expanded ? '500px' : '0'};
         opacity: ${task.expanded ? '1' : '0'};
         transition: all 0.4s ease;
-        margin-left:40px;
         overflow: hidden;
       ">
         <p>${descriptionHtml}</p>
