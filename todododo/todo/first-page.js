@@ -17,6 +17,23 @@ document.addEventListener("DOMContentLoaded", async function() {
     return id;
   }
 
+  // Переменная для отслеживания состояния соединения
+  let isOnline = true;
+
+  // Проверка соединения с сервером
+  async function checkServerConnection() {
+    try {
+      await fetch('https://jsonplaceholder.typicode.com/todos/1', { 
+        method: 'HEAD'
+      });
+      isOnline = true;
+      return true;
+    } catch (error) {
+      isOnline = false;
+      return false;
+    }
+  }
+
   // Ждем полной загрузки DOM
   await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -47,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     for (const key of requiredElements) {
       if (!elements[key]) {
         console.error(`Элемент ${key} не найден!`);
-        return null;
       }
     }
 
@@ -64,68 +80,92 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
   }
 
-  // Загружаем задачи - СНАЧАЛА из localStorage, ПОТОМ синхронизируем с сервером
+  // Загружаем задачи
   let tasks = [];
   let currentEditingTaskId = null;
 
-  // Загружаем из localStorage как основную версию
-  const localTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  // Загружаем из localStorage
+  const loadFromLocalStorage = () => {
+    try {
+      const stored = localStorage.getItem('tasks');
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error("Ошибка загрузки из localStorage:", error);
+      return [];
+    }
+  };
+
+  const localTasks = loadFromLocalStorage();
   console.log("Задачи из localStorage:", localTasks);
 
+  // Пытаемся загрузить с сервера
   try {
-    const serverTodos = await TodoAPI.getAllTodos();
-    console.log("Данные с сервера:", serverTodos);
+    await checkServerConnection();
     
-    // Объединяем данные: приоритет у localStorage, но добавляем новые задачи с сервера
-    const serverTasks = serverTodos.map(todo => ({
-      id: normalizeId(todo._id || todo.id),
-      title: todo.name,
-      description: todo.description,
-      dueDate: todo.dueDate,
-      sprint: todo.sprint,
-      completed: todo.completed,
-      expanded: false
-    }));
+    if (isOnline) {
+      const serverTodos = await TodoAPI.getAllTodos();
+      console.log("Данные с сервера:", serverTodos);
+      
+      const serverTasks = serverTodos.map(todo => ({
+        id: normalizeId(todo._id || todo.id),
+        title: todo.name,
+        description: todo.description,
+        dueDate: todo.dueDate,
+        sprint: todo.sprint,
+        completed: todo.completed,
+        expanded: false,
+        synced: true
+      }));
 
-    // Создаем карту задач из localStorage для быстрого поиска
-    const localTasksMap = new Map();
-    localTasks.forEach(task => {
-      localTasksMap.set(normalizeId(task.id), task);
-    });
+      // Объединяем данные
+      const localTasksMap = new Map();
+      localTasks.forEach(task => {
+        localTasksMap.set(normalizeId(task.id), task);
+      });
 
-    // Объединяем: берем задачи из localStorage, если они есть, иначе с сервера
-    tasks = serverTasks.map(serverTask => {
-      const localTask = localTasksMap.get(normalizeId(serverTask.id));
-      if (localTask) {
-        // Сохраняем наши локальные изменения (дату, описание и т.д.)
-        return {
-          ...serverTask, // базовые данные с сервера
-          dueDate: localTask.dueDate, // наша измененная дата
-          description: localTask.description, // наше измененное описание
-          sprint: localTask.sprint, // наш измененный спринт
-          expanded: localTask.expanded || false // наше состояние развертывания
-        };
-      }
-      return serverTask;
-    });
+      tasks = serverTasks.map(serverTask => {
+        const localTask = localTasksMap.get(normalizeId(serverTask.id));
+        if (localTask) {
+          return {
+            ...serverTask,
+            dueDate: localTask.dueDate,
+            description: localTask.description,
+            sprint: localTask.sprint,
+            expanded: localTask.expanded || false,
+            synced: true
+          };
+        }
+        return serverTask;
+      });
 
-    // Добавляем задачи, которые есть в localStorage но нет на сервере
-    localTasks.forEach(localTask => {
-      const exists = tasks.some(task => normalizeId(task.id) === normalizeId(localTask.id));
-      if (!exists) {
-        tasks.push(localTask);
-      }
-    });
-    
-    console.log("Объединенные задачи:", tasks);
+      // Добавляем локальные задачи которых нет на сервере
+      localTasks.forEach(localTask => {
+        const exists = tasks.some(task => normalizeId(task.id) === normalizeId(localTask.id));
+        if (!exists) {
+          tasks.push({...localTask, synced: false});
+        }
+      });
+      
+    } else {
+      // Оффлайн режим - используем только localStorage
+      tasks = localTasks.map(task => ({...task, synced: false}));
+    }
     
   } catch (error) {
-    console.error("Ошибка загрузки задач с сервера, используем localStorage:", error);
-    tasks = localTasks;
+    console.error("Ошибка загрузки задач:", error);
+    tasks = localTasks.map(task => ({...task, synced: false}));
+    isOnline = false;
   }
 
-  // Сохраняем объединенные задачи обратно в localStorage
-  saveToLocalStorage();
+  // Сохраняем задачи
+  const saveToLocalStorage = () => {
+    try {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      updateTasksCount();
+    } catch (error) {
+      console.error("Ошибка сохранения в localStorage:", error);
+    }
+  };
 
   // Инициализация
   function init() {
@@ -134,6 +174,71 @@ document.addEventListener("DOMContentLoaded", async function() {
     renderAllTasks();
     initDatePlaceholder();
     updateTasksCount();
+    
+    // Периодическая проверка соединения
+    setInterval(async () => {
+      await checkServerConnection();
+      if (isOnline) {
+        try {
+          await syncWithServer();
+        } catch (error) {
+          console.error("Ошибка синхронизации:", error);
+        }
+      }
+    }, 30000);
+  }
+
+  // Синхронизация с сервером
+  async function syncWithServer() {
+    if (!isOnline) return;
+
+    try {
+      // Синхронизируем несинхронизированные задачи
+      const unsyncedTasks = tasks.filter(task => !task.synced);
+      
+      for (const task of unsyncedTasks) {
+        try {
+          if (task.id && task.id.startsWith('local-')) {
+            // Новая задача - создаем на сервере
+            const newTodo = await TodoAPI.addTodo({
+              name: task.title,
+              description: task.description,
+              dueDate: task.dueDate,
+              sprint: task.sprint,
+              completed: task.completed
+            });
+            
+            // Заменяем локальный ID на серверный
+            const taskIndex = tasks.findIndex(t => t.id === task.id);
+            if (taskIndex !== -1) {
+              tasks[taskIndex].id = normalizeId(newTodo._id);
+              tasks[taskIndex].synced = true;
+            }
+          } else {
+            // Существующая задача - обновляем на сервере
+            await TodoAPI.updateTodo(normalizeId(task.id), {
+              name: task.title,
+              description: task.description,
+              dueDate: task.dueDate,
+              sprint: task.sprint,
+              completed: task.completed
+            });
+            
+            const taskIndex = tasks.findIndex(t => t.id === task.id);
+            if (taskIndex !== -1) {
+              tasks[taskIndex].synced = true;
+            }
+          }
+        } catch (error) {
+          console.error(`Ошибка синхронизации задачи ${task.id}:`, error);
+        }
+      }
+      
+      saveToLocalStorage();
+      
+    } catch (error) {
+      console.error("Ошибка синхронизации:", error);
+    }
   }
 
   // Меню
@@ -228,41 +333,62 @@ document.addEventListener("DOMContentLoaded", async function() {
         name: title,
         description: DOM.taskDescriptionInput ? DOM.taskDescriptionInput.value.trim() : '',
         dueDate: dueDate,
-        sprint: DOM.taskSprintInput ? DOM.taskSprintInput.value.trim() || 'Без спринта' : 'Без спринта'
+        sprint: DOM.taskSprintInput ? DOM.taskSprintInput.value.trim() || 'Без спринта' : 'Без спринта',
+        completed: false
       };
 
       if (currentEditingTaskId) {
-        const existingTask = tasks.find(t => normalizeId(t.id) === normalizeId(currentEditingTaskId));
-        if (existingTask) {
-          taskData.completed = existingTask.completed;
-        }
-
-        // ОБНОВЛЯЕМ НА СЕРВЕРЕ ВСЕ ПОЛЯ, ВКЛЮЧАЯ ДАТУ
-        const updateResult = await TodoAPI.updateTodo(normalizeId(currentEditingTaskId), taskData);
-        console.log("Результат обновления на сервере:", updateResult);
-        
-        const index = tasks.findIndex(t => normalizeId(t.id) === normalizeId(currentEditingTaskId));
-        if (index !== -1) {
-          tasks[index] = { 
-            ...tasks[index],
+        // Редактирование существующей задачи
+        const taskIndex = tasks.findIndex(t => normalizeId(t.id) === normalizeId(currentEditingTaskId));
+        if (taskIndex !== -1) {
+          taskData.completed = tasks[taskIndex].completed;
+          
+          if (isOnline) {
+            try {
+              await TodoAPI.updateTodo(normalizeId(currentEditingTaskId), taskData);
+              tasks[taskIndex].synced = true;
+            } catch (error) {
+              console.error("Ошибка обновления на сервере:", error);
+              tasks[taskIndex].synced = false;
+            }
+          } else {
+            tasks[taskIndex].synced = false;
+          }
+          
+          tasks[taskIndex] = {
+            ...tasks[taskIndex],
             title: taskData.name,
             description: taskData.description,
-            dueDate: taskData.dueDate, // Сохраняем новую дату
+            dueDate: taskData.dueDate,
             sprint: taskData.sprint
           };
         }
       } else {
-        taskData.completed = false;
-        const newTodo = await TodoAPI.addTodo(taskData);
+        // Создание новой задачи
+        let newTaskId;
+        
+        if (isOnline) {
+          try {
+            const newTodo = await TodoAPI.addTodo(taskData);
+            newTaskId = normalizeId(newTodo._id);
+          } catch (error) {
+            console.error("Ошибка создания на сервере:", error);
+            // Генерируем временный ID для оффлайн-режима
+            newTaskId = 'local-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+          }
+        } else {
+          newTaskId = 'local-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
         
         tasks.push({
-          id: normalizeId(newTodo._id),
+          id: newTaskId,
           title: taskData.name,
           description: taskData.description,
           dueDate: taskData.dueDate,
           sprint: taskData.sprint,
           completed: false,
-          expanded: false
+          expanded: false,
+          synced: isOnline
         });
       }
 
@@ -272,14 +398,8 @@ document.addEventListener("DOMContentLoaded", async function() {
       
     } catch (error) {
       console.error("Ошибка сохранения задачи:", error);
-      alert("Ошибка сохранения задачи: " + error.message);
+      alert("Ошибка сохранения задачи. Проверьте соединение с интернетом.");
     }
-  }
-
-  // Сохранение в localStorage
-  function saveToLocalStorage() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    updateTasksCount();
   }
 
   // Обновление счетчиков задач
@@ -430,9 +550,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         max-height: ${task.expanded ? '500px' : '0'};
         opacity: ${task.expanded ? '1' : '0'};
         transition: all 0.4s ease;
-        overflow: hidden;
-        padding-left: 30px; /* Добавляем отступ слева как у заголовка */
-      ">
+        overflow: hidden;      ">
         <p>${descriptionHtml}</p>
       </div>
       <div class="day-sprint">
@@ -462,13 +580,29 @@ document.addEventListener("DOMContentLoaded", async function() {
           try {
             const newCompletedState = !tasks[taskIndex].completed;
             
-            await TodoAPI.updateTodo(normalizeId(taskData.id), { 
-              completed: newCompletedState 
-            });
+            if (isOnline) {
+              try {
+                await TodoAPI.updateTodo(normalizeId(taskData.id), { 
+                  completed: newCompletedState 
+                });
+                tasks[taskIndex].synced = true;
+              } catch (error) {
+                console.error("Ошибка обновления на сервере:", error);
+                tasks[taskIndex].synced = false;
+              }
+            } else {
+              tasks[taskIndex].synced = false;
+            }
             
             tasks[taskIndex].completed = newCompletedState;
             saveToLocalStorage();
-            renderAllTasks();
+            
+            // Немедленное визуальное обновление
+            updateTaskElementVisualState(taskElement, tasks[taskIndex]);
+            
+            // Обновляем счетчики
+            updateTasksCount();
+            
           } catch (error) {
             console.error("Ошибка обновления задачи:", error);
           }
@@ -481,27 +615,20 @@ document.addEventListener("DOMContentLoaded", async function() {
         e.stopPropagation();
         if (confirm('Удалить задачу?')) {
           try {
-            const taskId = normalizeId(taskData.id);
-            console.log("Deleting task with normalized ID:", taskId);
+            if (isOnline && taskData.synced) {
+              try {
+                await TodoAPI.deleteTodo(normalizeId(taskData.id));
+              } catch (error) {
+                console.error("Ошибка удаления на сервере:", error);
+              }
+            }
             
-            await TodoAPI.deleteTodo(taskId);
-            
-            tasks = tasks.filter(t => normalizeId(t.id) !== taskId);
-            
+            tasks = tasks.filter(t => normalizeId(t.id) !== normalizeId(taskData.id));
             saveToLocalStorage();
             renderAllTasks();
             
           } catch (error) {
             console.error("Ошибка удаления задачи:", error);
-            
-            let errorMessage = "Ошибка удаления задачи";
-            if (error.message.includes("404")) {
-              errorMessage = "Задача не найдена на сервере";
-            } else if (error.message.includes("500")) {
-              errorMessage = "Ошибка сервера при удалении";
-            }
-            
-            alert(`${errorMessage}\n\nДетали: ${error.message}`);
           }
         }
       });
@@ -548,6 +675,75 @@ document.addEventListener("DOMContentLoaded", async function() {
           showTaskForm();
         }
       });
+    }
+  }
+
+  // Функция обновления визуального состояния
+  function updateTaskElementVisualState(taskElement, task) {
+    const completeIcon = taskElement.querySelector('.complete-icon');
+    const taskName = taskElement.querySelector('.task-name');
+    const repeatIcon = taskElement.querySelector('.repeat-icon');
+    const dayElement = taskElement.querySelector('.day');
+    const sprintElement = taskElement.querySelector('.sprint');
+    
+    if (task.completed) {
+      taskElement.classList.add('completed');
+    } else {
+      taskElement.classList.remove('completed');
+    }
+    
+    if (completeIcon) {
+      completeIcon.src = task.completed ? 
+        '../todo/assets/icons/tasks-check.svg' : 
+        '../todo/assets/icons/tasks-ellipse.svg';
+    }
+    
+    if (taskName) {
+      if (task.completed) {
+        taskName.style.textDecoration = 'line-through';
+        taskName.style.color = '#656896';
+      } else {
+        taskName.style.textDecoration = 'none';
+        taskName.style.color = '';
+      }
+    }
+    
+    if (repeatIcon) {
+      repeatIcon.src = task.completed ? 
+        '../todo/assets/icons/tasks-repeat-off.svg' : 
+        '../todo/assets/icons/tasks-repeat-on.svg';
+    }
+    
+    if (dayElement) {
+      if (task.completed) {
+        dayElement.style.textDecoration = 'line-through';
+        dayElement.style.color = '#656896';
+        dayElement.classList.remove('overdue');
+      } else {
+        dayElement.style.textDecoration = 'none';
+        dayElement.style.color = '';
+        
+        const taskDate = new Date(task.dueDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        taskDate.setHours(0, 0, 0, 0);
+        
+        if (taskDate < today) {
+          dayElement.classList.add('overdue');
+        } else {
+          dayElement.classList.remove('overdue');
+        }
+      }
+    }
+    
+    if (sprintElement) {
+      if (task.completed) {
+        sprintElement.style.textDecoration = 'line-through';
+        sprintElement.style.color = '#656896';
+      } else {
+        sprintElement.style.textDecoration = 'none';
+        sprintElement.style.color = '';
+      }
     }
   }
 
