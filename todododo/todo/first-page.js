@@ -550,7 +550,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         max-height: ${task.expanded ? '500px' : '0'};
         opacity: ${task.expanded ? '1' : '0'};
         transition: all 0.4s ease;
-        overflow: hidden;      ">
+        overflow: hidden;
+        padding-left:30px;      ">
         <p>${descriptionHtml}</p>
       </div>
       <div class="day-sprint">
