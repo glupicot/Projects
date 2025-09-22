@@ -1,6 +1,7 @@
 // src/components/common/EmailInput/EmailInput.jsx
 import { useState } from 'react';
 import styles from './EmailInput.module.css';
+import MailIcon from '../../../assets/icons/mail.svg'; // Правильный импорт
 
 const EmailInput = ({ 
   value, 
@@ -9,22 +10,7 @@ const EmailInput = ({
   required = true,
   onValidityChange 
 }) => {
-  const [isValid, setIsValid] = useState(false);
-
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    const isValidEmail = validateEmail(value);
-    
-    onChange(value);
-    setIsValid(isValidEmail);
-    onValidityChange?.(isValidEmail);
-  };
-
+  // ... остальной код
   return (
     <div className={styles.inputContainer}>
       <input
@@ -34,6 +20,9 @@ const EmailInput = ({
         onChange={handleChange}
         required={required}
         className={styles.emailInput}
+        style={{
+          backgroundImage: `url(${MailIcon})` // Используем импортированную иконку
+        }}
       />
     </div>
   );

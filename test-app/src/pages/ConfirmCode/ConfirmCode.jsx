@@ -1,129 +1,83 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styles from "./confirm-code.module.css"; // Исправленное имя файла
+// src/pages/ConfirmCode/ConfirmCode.jsx
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import BackLink from '../../components/common/BackLink/BackLink';
+import AuthHeader from '../../components/common/AuthHeader/AuthHeader';
+import ConfirmCodeInput from '../../components/common/ConfirmCodeInput/ConfirmCodeInput';
+import Button from '../../components/common/Button/Button';
+import AuthFooter from '../../components/common/AuthFooter/AuthFooter';
+import AuthIllustration from '../../components/common/AuthIllustration/AuthIllustration';
+import styles from './confirm-code.module.css';
 
-// Импортируем изображения с правильными путями
 import ManImage from '../../assets/images/man.svg';
-import StrelkaIcon from '../../assets/icons/tuda.svg';
 
 const ConfirmCode = () => {
-  const [code, setCode] = useState(['', '', '', '', '']);
-  const [isButtonActive, setIsButtonActive] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(180);
-  const inputsRef = useRef([]);
+  const [code, setCode] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || 'your@email.com';
 
-  // Таймер обратного отсчета
-  useEffect(() => {
-    if (remainingTime <= 0) return;
-
-    const timer = setInterval(() => {
-      setRemainingTime(prev => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [remainingTime]);
-
-  // Проверка кода
-  useEffect(() => {
-    const isCodeComplete = code.every(digit => digit !== '');
-    const isCodeCorrect = code.join('') === '12345'; // Пример кода
-    setIsButtonActive(isCodeComplete && isCodeCorrect);
-  }, [code]);
-
-  // Обработчик ввода цифр
-  const handleInputChange = (index, value) => {
-    if (!/^\d?$/.test(value)) return; // Только цифры
-
-    const newCode = [...code];
-    newCode[index] = value;
+  const handleCodeChange = (newCode) => {
     setCode(newCode);
+  };
 
-    // Автопереход к следующему полю
-    if (value !== '' && index < 4) {
-      inputsRef.current[index + 1].focus();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (code.length === 4) {
+      setLoading(true);
+      try {
+        console.log('Код подтверждения:', code);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        navigate('/new-password');
+      } catch (error) {
+        console.error('Ошибка:', error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  // Обработчик клавиш
-  const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && code[index] === '' && index > 0) {
-      inputsRef.current[index - 1].focus();
-    }
-  };
-
-  // Отправка формы
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isButtonActive) {
-      navigate('/new-password');
-    } else if (remainingTime <= 0) {
-      setRemainingTime(180); // Перезапуск таймера
-    }
-  };
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  const handleDeveloperClick = () => {
+    console.log('Клик по ссылке разработчика');
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <div className={styles.strelka}>
-          <Link to="/" className={styles.strelkaLink}>
-            <img src={StrelkaIcon} alt="Назад" />
-          </Link>
-          <p>Вернуться на стартовую страницу</p>
-        </div>
-
+        <BackLink to="/change-password" text="Вернуться к смене пароля" />
+        
         <div className={styles.centerTextBox}>
-          <h1>Смена пароля</h1>
-          <h2>Введите код подтверждения,<br/>присланный в письме на вашу почту</h2>
+          <AuthHeader
+            title="Код подтверждения"
+            subtitle={`Введите 4-значный код, отправленный на ${email}`}
+          />
 
           <form onSubmit={handleSubmit}>
-            <div className={styles.pinCode}>
-              {code.map((digit, index) => (
-                <input
-                  key={index}
-                  ref={el => inputsRef.current[index] = el}
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="_"
-                  value={digit}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
-                  maxLength={1}
-                  autoFocus={index === 0}
-                  className={styles.codeInput}
-                />
-              ))}
-            </div>
+            <ConfirmCodeInput 
+              length={4} 
+              onCodeChange={handleCodeChange} 
+            />
 
-            <button
+            <Button
               type="submit"
-              className={`${styles.button} ${isButtonActive ? styles.activeButton : ''}`}
-              disabled={!isButtonActive && remainingTime > 0}
+              isActive={code.length === 4}
+              loading={loading}
+              size="large"
             >
-              {isButtonActive ? 'Подтвердить смену пароля' : 
-               remainingTime > 0 ? `Отправить код повторно через ${formatTime(remainingTime)}` : 
-               'Отправить код повторно'}
-            </button>
+              Подтвердить
+            </Button>
 
-            <div className={styles.wtf}>
-              <p>Если у вас нет учетной записи, обратитесь <a href="#" className={styles.buttonLink}>к разработчику</a></p>
-            </div>
+            <AuthFooter
+              text="Если у вас нет учетной записи, обратитесь"
+              linkText="к разработчику"
+              onLinkClick={handleDeveloperClick}
+            />
           </form>
         </div>
       </div>
 
-      <div className={styles.right}>
-        <div className={styles.centered}>
-          <img src={ManImage} alt="Иллюстрация" />
-        </div>
-      </div>
+      <AuthIllustration imageSrc={ManImage} />
     </div>
   );
 };

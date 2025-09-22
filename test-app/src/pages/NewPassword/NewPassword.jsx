@@ -1,20 +1,23 @@
+// src/pages/NewPassword/NewPassword.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import usePasswordToggle from '../../hooks/usePasswordToggle';
-import styles from "./new-password.module.css"; // Исправленный импорт
+import BackLink from '../../components/common/BackLink/BackLink';
+import AuthHeader from '../../components/common/AuthHeader/AuthHeader';
+import Input from '../../components/common/Input/Input';
+import Button from '../../components/common/Button/Button';
+import AuthFooter from '../../components/common/AuthFooter/AuthFooter';
+import AuthIllustration from '../../components/common/AuthIllustration/AuthIllustration';
+import styles from './new-password.module.css';
 
-// Импортируем изображения с правильными путями
-import ManImage from '../../assets/images/man.svg';
+// Импортируем изображения
 import VectorIcon from '../../assets/icons/Vector.svg';
-import GlazokClosed from '../../assets/icons/glazok-closed.svg';
-import GlazokOpen from '../../assets/icons/glazok.svg';
+import ManImage from '../../assets/images/man.svg';
 
 const NewPassword = () => {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
   const [isButtonActive, setIsButtonActive] = useState(false);
-  const [passwordType1, togglePasswordVisibility1] = usePasswordToggle();
-  const [passwordType2, togglePasswordVisibility2] = usePasswordToggle();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Проверка совпадения паролей
@@ -23,90 +26,80 @@ const NewPassword = () => {
     setIsButtonActive(isMatch);
   }, [password1, password2]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (isButtonActive) {
-      console.log('Новый пароль установлен:', password1);
-      // Здесь будет логика смены пароля через API
-      navigate('/'); // Переходим на главную страницу
+      setLoading(true);
+      try {
+        console.log('Новый пароль установлен:', password1);
+        // Здесь будет логика смены пароля через API
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        navigate('/login');
+      } catch (error) {
+        console.error('Ошибка:', error);
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  const handleDeveloperClick = () => {
+    console.log('Клик по ссылке разработчика');
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.left}>
+        <BackLink to="/confirm-code" text="Вернуться к подтверждению кода" />
+        
         <div className={styles.centerTextBox}>
-          <h1>Установка<br/>нового пароля</h1>
-          <h2>Придумайте новый пароль для вашей учётной записи</h2>
+          <AuthHeader
+            title="Установка нового пароля"
+            subtitle="Придумайте новый пароль для вашей учётной записи"
+          />
 
           <form onSubmit={handleSubmit}>
             <div className={styles.formContainer}>
-              <div className={styles.input}>
-                <div className={styles.svgpass}>
-                  <img src={VectorIcon} alt="password-icon" />
-                </div>
-                <input
-                  type={passwordType1}
-                  id="myPass"
-                  placeholder="Новый пароль"
-                  value={password1}
-                  onChange={(e) => setPassword1(e.target.value)}
-                  required
-                />
-                <div className={styles.svgeye} onClick={togglePasswordVisibility1}>
-                  <img
-                    id="myImage"
-                    src={passwordType1 === 'password' ? GlazokClosed : GlazokOpen}
-                    alt="toggle visibility"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </div>
-              </div>
+              <Input
+                type="password"
+                placeholder="Новый пароль"
+                value={password1}
+                onChange={(e) => setPassword1(e.target.value)}
+                icon={<img src={VectorIcon} alt="password-icon" />}
+                showPasswordToggle={true}
+                required
+              />
 
-              <div className={styles.input}>
-                <div className={styles.svgpass}>
-                  <img src={VectorIcon} alt="password-icon" />
-                </div>
-                <input
-                  type={passwordType2}
-                  id="myPass2"
-                  placeholder="Повторите пароль"
-                  value={password2}
-                  onChange={(e) => setPassword2(e.target.value)}
-                  required
-                />
-                <div className={styles.svgeye2} onClick={togglePasswordVisibility2}>
-                  <img
-                    id="myImage2"
-                    src={passwordType2 === 'password' ? GlazokClosed : GlazokOpen}
-                    alt="toggle visibility"
-                    style={{ cursor: 'pointer' }}
-                  />
-                </div>
-              </div>
+              <Input
+                type="password"
+                placeholder="Повторите пароль"
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
+                icon={<img src={VectorIcon} alt="password-icon" />}
+                showPasswordToggle={true}
+                required
+              />
             </div>
 
-            <button
+            <Button
               type="submit"
-              id="myButton"
-              className={`${styles.button} ${isButtonActive ? styles.activeButton : ''}`}
-              disabled={!isButtonActive}
+              isActive={isButtonActive}
+              loading={loading}
+              size="large"
             >
               Сменить пароль
-            </button>
+            </Button>
 
-            <div className={styles.wtf}>
-              <p>Если у вас нет учетной записи, обратитесь <a href="#" className={styles.buttonLink}>к разработчику</a></p>
-            </div>
+            <AuthFooter
+              text="Если у вас нет учетной записи, обратитесь"
+              linkText="к разработчику"
+              onLinkClick={handleDeveloperClick}
+            />
           </form>
         </div>
       </div>
 
-      <div className={styles.right}>
-        <div className={styles.centered}>
-          <img src={ManImage} alt="Иллюстрация" />
-        </div>
-      </div>
+      <AuthIllustration imageSrc={ManImage} />
     </div>
   );
 };

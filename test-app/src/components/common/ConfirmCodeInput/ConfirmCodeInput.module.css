@@ -1,0 +1,48 @@
+/* src/components/common/ConfirmCodeInput/ConfirmCodeInput.module.css */
+.codeContainer {
+  display: flex;
+  justify-content: center;
+  gap: 19.25px;
+  margin-bottom: 32px;
+}
+
+.pinInput {
+  width: 78px;
+  height: 78px;
+  border: 1px solid var(--color-gray);
+  border-radius: 16px;
+  text-align: center;
+  font-family: "VelaSans";
+  font-size: 18px;
+  color: var(--color-gray);
+  background-color: #F3F3F3;
+  outline: none;
+}
+
+.pinInput:focus {
+  border-color: var(--color-blue);
+  color: var(--color-black);
+}
+
+/* Убираем стрелки у number input */
+.pinInput::-webkit-outer-spin-button,
+.pinInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pinInput[type="number"] {
+  -moz-appearance: textfield;
+}
+
+@media (max-width: 480px) {
+  .pinInput {
+    width: 60px;
+    height: 60px;
+    font-size: 16px;
+  }
+  
+  .codeContainer {
+    gap: 10px;
+  }
+}
