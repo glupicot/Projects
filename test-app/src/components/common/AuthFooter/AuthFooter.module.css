@@ -1,0 +1,23 @@
+/* src/components/common/AuthFooter/AuthFooter.module.css */
+.authFooter {
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.authFooter p {
+  font-family: "VelaSans";
+  color: var(--color-white);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  padding: 0;
+}
+
+.link {
+  color: #679DFF;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

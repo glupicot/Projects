@@ -1,0 +1,296 @@
+body {
+    background-color: var(--color-dblue);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+@font-face {
+    font-family: "Bounded";
+    src: url('../assets/fonts/Bounded-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "BricolageGrotesque";
+    src: url('../assets/fonts/BricolageGrotesque.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "VelaSans";
+    src: url('../assets/fonts/VelaSans-Regular.woff2') format('woff2'),
+         url('../assets/fonts/VelaSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --color-dblue: #252740;
+    --color-blue: #679DFF;
+    --color-white: #FFFFFF;
+    --color-black: #2F2D2C;
+    --color-gray: #5C5C5C;
+    --color-red: #F55353;
+    --gap-8: 8px;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100vh;
+    background-color: var(--color-dblue);
+}
+
+.centerTextBox {
+    text-align: center;
+    width: 467px;
+}
+
+.right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100vh;
+    background-color: var(--color-dblue);
+}
+
+.right img {
+    width: 80%;
+    height: auto;
+    max-width: 948px;
+}
+
+h1 {
+    color: var(--color-white);
+    font-family: "BricolageGrotesque";
+    font-weight: 700;
+    font-size: 49.41px;
+    line-height: 142%;
+    text-align: center;
+    padding: 0;
+    margin-bottom: 12px;
+}
+
+h2 {
+    color: var(--color-white);
+    font-family: "Bounded";
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 142%;
+    text-align: center;
+    padding: 0;
+    margin-bottom: 32px;
+}
+
+.button {
+    display: inline-block;
+    width: 467px;
+    height: 78px;
+    color: var(--color-white);
+    background: var(--color-blue);
+    border-radius: 50px;
+    border: 0;
+    font-family: "VelaSans";
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 32px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #5a8de5;
+}
+
+.button a {
+    text-decoration: none;
+    color: var(--color-white);
+}
+
+p {
+    font-family: "VelaSans";
+    color: var(--color-white);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 150%;
+    padding: 0;
+    margin: 8px 0;
+}
+
+.wtf a {
+    color: #679DFF;
+    text-decoration: none;
+}
+
+.linkpass a {
+    color: #679DFF;
+    text-decoration: none;
+}
+
+.formContainer {
+    width: 467px;
+    display: inline-block;
+}
+
+.input {
+    position: relative;
+    width: 467px;
+    height: 78px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray);
+    border-radius: 50px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.input input {
+    width: 330px;
+    height: 100%;
+    outline: none;
+    border: none;
+    font-family: "VelaSans";
+    font-size: 18px;
+    color: var(--color-gray);
+    background: transparent;
+    padding: 0 20px;
+}
+
+.svglogin, .svgpass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 100%;
+    padding: 0 10px;
+}
+
+.svglogin img, .svgpass img {
+    width: 24px;
+    height: 24px;
+}
+
+.svgeye {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.svgeye img {
+    width: 24px;
+    height: 24px;
+}
+
+.errorlog {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 8px solid var(--color-white);
+    border-right: 8px solid transparent;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    margin-right: -4px;
+}
+
+.errorText {
+    color: var(--color-black);
+    font-family: "VelaSans";
+    font-weight: 500;
+    font-size: 14px;
+    background: var(--color-white);
+    padding: 12px 16px;
+    border-radius: 12px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.wtf, .linkpass {
+    margin-top: 16px;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .left, .right {
+        width: 100%;
+        height: auto;
+        padding: 40px 20px;
+    }
+    
+    .centerTextBox {
+        width: 100%;
+        max-width: 467px;
+    }
+    
+    .formContainer,
+    .input,
+    .button {
+        width: 100%;
+        max-width: 467px;
+    }
+    
+    .right img {
+        width: 60%;
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 36px;
+    }
+    
+    h2 {
+        font-size: 12px;
+    }
+    
+    .input {
+        height: 60px;
+    }
+    
+    .button {
+        height: 60px;
+        font-size: 16px;
+    }
+    
+    .input input {
+        font-size: 16px;
+    }
+}

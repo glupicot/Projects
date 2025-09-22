@@ -1,0 +1,52 @@
+/* src/components/common/AuthIllustration/AuthIllustration.module.css */
+.right {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.centered img {
+  width: 948px;
+  height: 1085px;
+  max-width: none;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .right {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 40px 20px;
+  }
+  
+  .centered img {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+    max-height: none;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 480px) {
+  .centered img {
+    max-width: 300px;
+  }
+}

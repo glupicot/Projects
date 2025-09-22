@@ -1,0 +1,80 @@
+/* src/pages/Login/login.module.css */
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  padding: 40px;
+}
+
+.centerTextBox {
+  text-align: center;
+  width: 467px;
+  margin: 0 auto;
+}
+
+.form {
+  width: 100%;
+}
+
+.formContainer {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.linkpass {
+  margin-top: 16px;
+}
+
+.linkpass p {
+  font-family: "VelaSans";
+  color: var(--color-white);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+}
+
+.link {
+  color: var(--color-blue);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .left {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 40px 20px;
+  }
+  
+  .centerTextBox {
+    width: 100%;
+    max-width: 467px;
+  }
+}
+
+@media (max-width: 480px) {
+  .left {
+    padding: 20px;
+  }
+}

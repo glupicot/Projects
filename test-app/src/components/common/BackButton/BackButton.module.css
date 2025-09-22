@@ -1,0 +1,22 @@
+/* src/components/common/BackButton/BackButton.module.css */
+.backButton {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background-color: #F3F3F3;
+  border-radius: 16px;
+  margin-right: 20px;
+  text-decoration: none;
+}
+
+.backLink svg {
+  color: var(--color-black);
+}

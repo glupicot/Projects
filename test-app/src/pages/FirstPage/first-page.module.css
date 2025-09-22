@@ -1,0 +1,572 @@
+/* Убрали body стили - они должны быть в global.css */
+.firstPageContainer {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    background-image: url("/assets/images/backgroung-img.svg");
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Перенесли шрифты в отдельный файл или оставляем здесь */
+@font-face {
+    font-family: "Bounded";
+    src: url('/assets/fonts/Bounded-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Unbounded";
+    src: url('/assets/fonts/Unbounded.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "BricolageGrotesque";
+    src: url('/assets/fonts/BricolageGrotesque.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "VelaSans";
+    src: url('/assets/fonts/VelaSans-Regular.woff2') format('woff2'),
+         url('/assets/fonts/VelaSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root{
+    --color-dblue: #252740;
+    --color-menu: #262845;
+    --color-blue: #679DFF;
+    --color-white: #FFFFFF;
+    --color-black: #2F2D2C;
+    --color-gray: #5C5C5C;
+    --color-line: #A8A4CE;
+    --color-button-shadow: #373957;
+    --color-green:#4FD049;
+    --color-orange: #D09149;
+    --color-red: #F55353;
+    --color-task-dark-blue: #262845;
+    --color-task-light-blue: #656896;
+    --color-menu-background: #A8A4CE;
+    --color-task-extra-dblue: #1F2138;
+    --color-task-font:#8F8CAA;
+}
+
+.allPage {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.verticalMenu {
+    width: 237px;
+    height: 100vh;
+    background-color: var(--color-menu);
+    transition: width 0.3s ease;
+}
+
+.menuText {
+    transition: opacity 0.2s ease;
+}
+
+.menuDivider {
+    border: none;
+    height: 1px;
+    background-color: var(--color-menu-background);
+    width: 197px;
+}
+
+.menuContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    margin-top: -7vh;
+    height: calc(100% - 26vh);
+    width: 100%;
+}
+
+.logoTop {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    margin-left: 24px;
+}
+
+.toggleBtn {
+    font-family: "BricolageGrotesque";
+    font-weight: 700;
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-white);
+    margin-left: 6px;
+    margin-right: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.menuText {
+    text-decoration: none;
+    font-family: "VelaSans";
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0 51px 0 16px;
+    display: flex;
+    align-items: center;
+    color: var(--color-white);
+}
+
+.menuLink {
+    display: flex;
+    margin-bottom: 26px !important;
+    margin-top: 26px !important;
+}
+
+.entryDown {
+    display: flex;
+    align-items: center;
+    margin-left: 28px;
+}
+
+.entry {
+    margin-left: 16px;
+    margin-right: 34px;
+    font-family: "VelaSans";
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.menuItem:hover {
+    background-color: var(--color-button-shadow);
+    border-radius: 12px;
+}
+
+/* Collapsed states */
+.verticalMenu.collapsed .menuText {
+    opacity: 0;
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.verticalMenu.collapsed .menuLink {
+    justify-content: center;
+}
+
+.verticalMenu.collapsed .toggleBtn,
+.verticalMenu.collapsed .entry,
+.verticalMenu.collapsed .entryDown img[alt="logout"] {
+    display: none;
+}
+
+.verticalMenu.collapsed {
+    width: 96px;
+}
+
+.verticalMenu.collapsed .menuDivider {
+    width: 56px;
+    margin: 0 auto;
+}
+
+.verticalMenu.collapsed .entryDown {
+    margin-top: 7px;
+    justify-content: center;
+}
+
+/* Main content */
+.mainMenuPage {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 46px 132px;
+}
+
+.mainContent h1 {
+    font-family: "Unbounded";
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--color-white);
+    margin-bottom: 16px;
+}
+
+.allMyTasks {
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.addNewTasks {
+    font-family: "VelaSans";
+    color: var(--color-white);
+    font-size: 18px;
+    font-weight: 500;
+    border: none;
+    background-color: var(--color-blue);
+    border-radius: 50px;
+    width: 277px;
+    height: 49px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.addNewTasks:hover {
+    background-color: #5a8de5;
+}
+
+/* Task sections */
+.timeOut, .nowMyTasks {
+    margin-bottom: 48px;
+}
+
+.task {
+    width: 100%;
+    max-width: 1400px;
+    height: auto;
+    padding: 32px;
+    border: none;
+    background-color: var(--color-task-dark-blue);
+    margin-bottom: 16px;
+    border-radius: 28px;
+}
+
+.taskHeader {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-family: "VelaSans", sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color-white);
+}
+
+.completeIcon {
+    width: 24px;
+    cursor: pointer;
+}
+
+.taskName {
+    flex-grow: 1;
+    margin-left: 16px;
+}
+
+.toggleIcon, .deleteIcon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-button-shadow);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.toggleIcon:hover, .deleteIcon:hover {
+    transform: scale(1.1);
+}
+
+.taskDescription {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    background: none;
+    color: var(--color-white);
+    font-family: "VelaSans";
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 140%;
+    margin-left: 42px;
+}
+
+.task.expanded .taskDescription {
+    max-height: 500px;
+    opacity: 1;
+    padding: 16px 0;
+}
+
+.daySprint {
+    margin-left: 72px;
+    display: flex;
+    align-items: center;
+}
+
+.day, .sprint {
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.nowMyTasks .day {
+    color: var(--color-white);
+}
+
+.timeOut .day {
+    color: var(--color-red);
+}
+
+.nowMyTasks .sprint {
+    color: var(--color-green);
+}
+
+.timeOut .sprint {
+    color: var(--color-orange);
+}
+
+.dayImg {
+    height: 24px;
+    width: 24px;
+    margin: 0 8px;
+}
+
+.repeatIcon {
+    margin-left: auto;
+    margin-right: 32px;
+}
+
+/* Completed task */
+.task.completed .completeIcon {
+    background: var(--color-button-shadow);
+    border-radius: 12px;
+}
+
+.task.completed .taskDescription,
+.task.completed .day,
+.task.completed .sprint {
+    color: var(--color-task-light-blue);
+    text-decoration: line-through;
+}
+
+/* Task counters */
+.taskCount, .totalCount {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-task-dark-blue);
+    border-radius: 8px;
+    padding: 8px;
+    margin-left: 12px;
+    font-family: "Unbounded";
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--color-white);
+}
+
+/* Task form overlay */
+.overlayContent {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 842px;
+    height: 100vh;
+    background-color: var(--color-dblue);
+    z-index: 1000;
+    border-radius: 28px 0 0 28px;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+.overlayContent.visible {
+    display: block;
+}
+
+.buttonsTopNewTask {
+    margin: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.buttonChevronLeft, .buttonArrowExpand {
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-button-shadow);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.buttonShare {
+    background-color: var(--color-button-shadow);
+    border-radius: 8px;
+    padding: 8px;
+    color: var(--color-white);
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    margin-left: auto;
+}
+
+/* Form inputs */
+.taskTitleInput, .taskSprintInput {
+    width: 100%;
+    height: 68px;
+    border: 1px solid var(--color-button-shadow);
+    background-color: var(--color-task-extra-dblue);
+    border-radius: 20px;
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--color-white);
+    padding: 0 20px;
+    margin: 16px 0;
+}
+
+.taskDescriptionInput {
+    width: 100%;
+    min-height: 338px;
+    border: 1px solid var(--color-button-shadow);
+    background-color: var(--color-task-extra-dblue);
+    border-radius: 20px;
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--color-white);
+    padding: 24px 20px;
+    resize: none;
+    margin: 16px 0;
+}
+
+.dateInputContainer {
+    position: relative;
+    width: 100%;
+    margin: 16px 0;
+}
+
+.dueDateInput {
+    width: 100%;
+    height: 68px;
+    border: none;
+    background-color: var(--color-button-shadow);
+    border-radius: 20px;
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--color-white);
+    padding: 0 20px;
+}
+
+.datePlaceholder {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-task-font);
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.dueDateInput:focus + .datePlaceholder,
+.dueDateInput:not(:placeholder-shown) + .datePlaceholder {
+    display: none;
+}
+
+.saveNote, .stopNote {
+    width: 178px;
+    height: 68px;
+    border: none;
+    background-color: var(--color-button-shadow);
+    border-radius: 20px;
+    font-family: "VelaSans";
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--color-white);
+    cursor: pointer;
+    margin: 16px 8px;
+}
+
+.saveNote:hover, .stopNote:hover {
+    background-color: var(--color-blue);
+}
+
+/* Responsive design */
+@media (max-width: 1400px) {
+    .mainMenuPage {
+        padding: 46px 20px;
+    }
+    
+    .task {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .allPage {
+        flex-direction: column;
+    }
+    
+    .verticalMenu {
+        width: 100%;
+        height: auto;
+    }
+    
+    .verticalMenu.collapsed {
+        width: 100%;
+    }
+    
+    .mainMenuPage {
+        width: 100%;
+        padding: 20px;
+    }
+    
+    .allMyTasks {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .addNewTasks {
+        width: 100%;
+    }
+    
+    .overlayContent {
+        width: 100%;
+        border-radius: 0;
+    }
+}
+
+/* Utility classes */
+.emptyMessage {
+    font-family: "VelaSans";
+    color: var(--color-task-font);
+    font-size: 16px;
+    text-align: center;
+    padding: 40px;
+}
+
+.collapseBtn {
+    cursor: pointer;
+    margin-left: 12px;
+    transition: transform 0.3s ease;
+}
+
+.nowMyTasks.collapsed .tasksContainer,
+.timeOut.collapsed .tasksContainer {
+    display: none;
+}
+
+.nowMyTasks.collapsed .collapseBtn,
+.timeOut.collapsed .collapseBtn {
+    transform: rotate(-90deg);
+}

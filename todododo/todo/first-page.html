@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../todo/css/first-page.css">
+    <script src="../todo/api.js"></script>
+    <script src="../todo/first-page.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <div class="all-page">
+        <div class="vertical-menu">
+            <div class="logo-top" id="toggle-menu-button">
+                <img src="../todo/assets/icons/to-do-hero.svg">
+                <p class="toggle-btn">ToDoHero</p>
+                <img src="../todo/assets/icons/arrow-from-right.svg" id="toggle-arrow">
+            </div>
+            <div class="menu-container">
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <a href="task.html" class="menu-link">
+                            <span class="menu-icon"> <img src="../todo/assets/icons/my-tasks.svg" alt="my-tasks"></span>
+                            <span class="menu-text">Мое задание</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="notifications.html" class="menu-link">
+                            <span class="menu-icon"> <img src="../todo/assets/icons/the-bell.svg" alt="notifications"> </span>
+                            <span class="menu-text">Уведомление</span>
+                        </a>
+                    </div>
+                    <hr class="menu-divider">
+
+                    <div class="menu-item">
+                        <a href="analytics.html" class="menu-link">
+                            <span class="menu-icon"> <img src="../todo/assets/icons/analytic.svg" alt="analytics"> </span>
+                            <span class="menu-text">Аналитика</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="settings.html" class="menu-link">
+                            <span class="menu-icon"> <img src="../todo/assets/icons/settings-icon.svg" alt="settings-icon"> </span>
+                            <span class="menu-text">Настройки</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="entry-down">
+                <img src="../todo/assets/icons/icon-welcome.svg">
+                <p class="entry">Любовь</p>
+                <img src="../todo/assets/icons/log-out.svg">
+            </div>
+        </div>
+        <div class="main-menu-page">
+            <div class="main-content">
+                <div class="all-my-tasks">
+                    <h1>Мои задачи</h1>
+                    <button type="button" class="add-new-tasks">Новая задача</button>
+                </div>
+
+                <div class="time-out">
+                    <div class="task-tittle-top">
+                        <h1>Просрочено</h1>
+                    </div>
+                </div>
+
+                <div class="now-my-tasks">
+                    <div class="task-tittle-top">
+                        <h1>Текущие задачи</h1>
+                        </div>
+                    </div>
+                </div>
+            <div class="overlay-content">
+                <div class="buttons-top-new-task">
+                    <img class="button-chevron-left" src="../todo/assets/icons/button-chevron-left.svg" alt="Назад">
+                    <img class="button-arrow-expand" src="../todo/assets/icons/button-arrow-expand.svg" alt="Полный экран">
+                    <a href="" class="button-share">Share</a>
+                    <img class="delete" src="../todo/assets/icons/delete.svg" alt="Удалить">
+                </div>
+                <div class="new-task-button">
+                    <input type="title" placeholder="Заголовок задачи" class="task-title-input" required>  
+                    <textarea type="maintext" placeholder="Описание задачи" class="task-description-input"></textarea>
+                    <input type="date" id="myDate" class="task-date-input" required>
+                    
+                    <div class="date-input-container">
+                        <input type="date" id="dueDate" class="due-date-input" required>
+                        <span class="date-placeholder">Дата исполнения</span>
+                    </div>                        
+                    <input type="sprint" placeholder="Спринт не выбран" class="task-sprint-input">
+                    <button class="save-note">Сохранить</button>
+                    <button class="stop-note">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

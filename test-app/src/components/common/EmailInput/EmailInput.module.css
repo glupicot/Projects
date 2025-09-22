@@ -1,0 +1,40 @@
+/* src/components/common/EmailInput/EmailInput.module.css */
+.inputContainer {
+  margin-bottom: 32px;
+}
+
+.emailInput {
+  width: 467px;
+  height: 78px;
+  text-indent: 84px;
+  font-family: "VelaSans";
+  font-size: 18px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray);
+  outline: none;
+  border-radius: 50px;
+  color: var(--color-gray);
+  background-image: url('../../../assets/icons/mail.svg');
+  background-repeat: no-repeat;
+  background-position: 20px center;
+}
+
+.emailInput:focus {
+  color: var(--color-black);
+}
+
+@media (max-width: 1024px) {
+  .emailInput {
+    width: 100%;
+    max-width: 467px;
+  }
+}
+
+@media (max-width: 480px) {
+  .emailInput {
+    height: 60px;
+    font-size: 16px;
+    text-indent: 60px;
+    background-position: 15px center;
+  }
+}
