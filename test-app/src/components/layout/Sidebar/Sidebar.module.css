@@ -1,0 +1,122 @@
+/* src/components/layout/Sidebar/Sidebar.module.css */
+.sidebar {
+  width: 237px;
+  height: 100vh;
+  background-color: var(--color-menu);
+  transition: width 0.3s ease;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar.collapsed {
+  width: 96px;
+}
+
+.logoTop {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+  margin-left: 24px;
+  cursor: pointer;
+}
+
+.toggleBtn {
+  font-family: "BricolageGrotesque";
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--color-white);
+  margin-left: 6px;
+  margin-right: 10px;
+  margin: 0;
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+  margin-top: -7vh;
+  height: calc(100% - 26vh);
+  width: 100%;
+}
+
+.menuItems {
+  width: 100%;
+}
+
+.menuItem {
+  margin: 26px 0;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 8px 16px;
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.menuText {
+  font-family: "VelaSans";
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--color-white);
+  margin-left: 16px;
+  transition: opacity 0.2s ease;
+}
+
+.menuDivider {
+  border: none;
+  height: 1px;
+  background-color: var(--color-menu-background);
+  width: 197px;
+  margin: 16px auto;
+}
+
+.sidebar.collapsed .menuText,
+.sidebar.collapsed .toggleBtn,
+.sidebar.collapsed .toggleArrow,
+.sidebar.collapsed .entry,
+.sidebar.collapsed .menuDivider {
+  display: none;
+}
+
+.sidebar.collapsed .menuLink {
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.sidebar.collapsed .menuDivider {
+  width: 56px;
+}
+
+.entryDown {
+  display: flex;
+  align-items: center;
+  margin-left: 28px;
+  position: absolute;
+  bottom: 30px;
+}
+
+.entry {
+  margin-left: 16px;
+  margin-right: 34px;
+  font-family: "VelaSans";
+  color: var(--color-white);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.menuItem:hover {
+  background-color: var(--color-button-shadow);
+  border-radius: 12px;
+}

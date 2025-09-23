@@ -1,6 +1,7 @@
 // src/pages/ChangePassword/ChangePassword.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import BackLink from '../../components/common/BackLink/BackLink';
 import AuthHeader from '../../components/common/AuthHeader/AuthHeader';
 import EmailInput from '../../components/common/EmailInput/EmailInput';
@@ -12,29 +13,37 @@ import styles from './change-password.module.css';
 import ManImage from '../../assets/images/man.svg';
 
 const ChangePassword = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { requestPasswordReset } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (isValidEmail) {
-      setLoading(true);
-      try {
-        console.log('Email отправлен:', email);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        navigate('/confirm-code');
-      } catch (error) {
-        console.error('Ошибка:', error);
-      } finally {
-        setLoading(false);
+    if (!isValidEmail) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const result = await requestPasswordReset(email);
+      
+      if (result.success) {
+        navigate('/confirm-code', { state: { email } });
+      } else {
+        setError(result.error || 'Ошибка отправки кода');
       }
+    } catch (err) {
+      setError('Ошибка соединения с сервером');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeveloperClick = () => {
-    console.log('Клик по ссылке разработчика');
+    console.log('Контакт с разработчиком');
   };
 
   return (
@@ -49,6 +58,8 @@ const ChangePassword = () => {
           />
 
           <form onSubmit={handleSubmit}>
+            {error && <div className={styles.error}>{error}</div>}
+            
             <EmailInput
               value={email}
               onChange={setEmail}
@@ -61,7 +72,7 @@ const ChangePassword = () => {
               loading={loading}
               size="large"
             >
-              Отправить код подтверждения
+              Отправить код
             </Button>
 
             <AuthFooter

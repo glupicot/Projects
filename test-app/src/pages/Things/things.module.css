@@ -1,296 +1,97 @@
-body {
-    background-color: var(--color-dblue);
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    overflow: hidden;
-}
-
-@font-face {
-    font-family: "Bounded";
-    src: url('../assets/fonts/Bounded-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: "BricolageGrotesque";
-    src: url('../assets/fonts/BricolageGrotesque.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: "VelaSans";
-    src: url('../assets/fonts/VelaSans-Regular.woff2') format('woff2'),
-         url('../assets/fonts/VelaSans-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-:root {
-    --color-dblue: #252740;
-    --color-blue: #679DFF;
-    --color-white: #FFFFFF;
-    --color-black: #2F2D2C;
-    --color-gray: #5C5C5C;
-    --color-red: #F55353;
-    --gap-8: 8px;
-}
-
+/* src/pages/Things/things.module.css */
 .container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
 }
 
 .left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    height: 100vh;
-    background-color: var(--color-dblue);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  padding: 40px;
 }
 
 .centerTextBox {
-    text-align: center;
-    width: 467px;
+  text-align: center;
+  width: 467px;
+  margin: 0 auto;
 }
 
-.right {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    height: 100vh;
-    background-color: var(--color-dblue);
-}
-
-.right img {
-    width: 80%;
-    height: auto;
-    max-width: 948px;
-}
-
-h1 {
-    color: var(--color-white);
-    font-family: "BricolageGrotesque";
-    font-weight: 700;
-    font-size: 49.41px;
-    line-height: 142%;
-    text-align: center;
-    padding: 0;
-    margin-bottom: 12px;
-}
-
-h2 {
-    color: var(--color-white);
-    font-family: "Bounded";
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 142%;
-    text-align: center;
-    padding: 0;
-    margin-bottom: 32px;
-}
-
-.button {
-    display: inline-block;
-    width: 467px;
-    height: 78px;
-    color: var(--color-white);
-    background: var(--color-blue);
-    border-radius: 50px;
-    border: 0;
-    font-family: "VelaSans";
-    font-weight: 500;
-    font-size: 18px;
-    text-align: center;
-    margin-top: 32px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.button:hover {
-    background-color: #5a8de5;
-}
-
-.button a {
-    text-decoration: none;
-    color: var(--color-white);
-}
-
-p {
-    font-family: "VelaSans";
-    color: var(--color-white);
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 150%;
-    padding: 0;
-    margin: 8px 0;
-}
-
-.wtf a {
-    color: #679DFF;
-    text-decoration: none;
-}
-
-.linkpass a {
-    color: #679DFF;
-    text-decoration: none;
+.form {
+  width: 100%;
 }
 
 .formContainer {
-    width: 467px;
-    display: inline-block;
+  width: 100%;
+  margin-bottom: 32px;
 }
 
-.input {
-    position: relative;
-    width: 467px;
-    height: 78px;
-    background: var(--color-white);
-    border: 1px solid var(--color-gray);
-    border-radius: 50px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
+.error {
+  color: var(--color-red);
+  font-family: "VelaSans";
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  background-color: rgba(245, 83, 83, 0.1);
+  border-radius: 4px;
+  border: 1px solid var(--color-red);
 }
 
-.input input {
-    width: 330px;
-    height: 100%;
-    outline: none;
-    border: none;
-    font-family: "VelaSans";
-    font-size: 18px;
-    color: var(--color-gray);
-    background: transparent;
-    padding: 0 20px;
+.linkpass {
+  margin-top: 16px;
 }
 
-.svglogin, .svgpass {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 100%;
-    padding: 0 10px;
+.linkpass p {
+  font-family: "VelaSans";
+  color: var(--color-white);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
 }
 
-.svglogin img, .svgpass img {
-    width: 24px;
-    height: 24px;
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--color-blue);
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
 }
 
-.svgeye {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
+.linkButton:hover {
+  color: #5a8de5;
 }
 
-.svgeye img {
-    width: 24px;
-    height: 24px;
-}
-
-.errorlog {
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    transform: translateY(-50%);
-    margin-left: 15px;
-    display: flex;
-    align-items: center;
-}
-
-.triangle {
-    width: 0;
-    height: 0;
-    border-left: 8px solid var(--color-white);
-    border-right: 8px solid transparent;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    margin-right: -4px;
-}
-
-.errorText {
-    color: var(--color-black);
-    font-family: "VelaSans";
-    font-weight: 500;
-    font-size: 14px;
-    background: var(--color-white);
-    padding: 12px 16px;
-    border-radius: 12px;
-    white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.wtf, .linkpass {
-    margin-top: 16px;
-}
-
-/* Адаптивность */
+/* Responsive */
 @media (max-width: 1024px) {
-    .container {
-        flex-direction: column;
-    }
-    
-    .left, .right {
-        width: 100%;
-        height: auto;
-        padding: 40px 20px;
-    }
-    
-    .centerTextBox {
-        width: 100%;
-        max-width: 467px;
-    }
-    
-    .formContainer,
-    .input,
-    .button {
-        width: 100%;
-        max-width: 467px;
-    }
-    
-    .right img {
-        width: 60%;
-        max-width: 400px;
-    }
+  .container {
+    flex-direction: column;
+  }
+  
+  .left {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 40px 20px;
+  }
+  
+  .centerTextBox {
+    width: 100%;
+    max-width: 467px;
+  }
 }
 
 @media (max-width: 480px) {
-    h1 {
-        font-size: 36px;
-    }
-    
-    h2 {
-        font-size: 12px;
-    }
-    
-    .input {
-        height: 60px;
-    }
-    
-    .button {
-        height: 60px;
-        font-size: 16px;
-    }
-    
-    .input input {
-        font-size: 16px;
-    }
+  .left {
+    padding: 20px;
+  }
 }

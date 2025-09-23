@@ -1,6 +1,7 @@
 // src/pages/Login/Login.jsx
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import Input from '../../components/common/Input/Input';
 import Button from '../../components/common/Button/Button';
 import AuthHeader from '../../components/common/AuthHeader/AuthHeader';
@@ -8,34 +9,46 @@ import AuthFooter from '../../components/common/AuthFooter/AuthFooter';
 import AuthIllustration from '../../components/common/AuthIllustration/AuthIllustration';
 import styles from './login.module.css';
 
-// Импортируем изображения
 import PersonIcon from '../../assets/icons/Person.svg';
 import VectorIcon from '../../assets/icons/Vector.svg';
 import ManImage from '../../assets/images/man.svg';
 
 const Login = () => {
-  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError('');
+    
+    if (!email || !password) {
+      setError('Заполните все поля');
+      return;
+    }
+
     setLoading(true);
+
     try {
-      console.log('Логин:', login, 'Пароль:', password);
-      // Здесь будет проверка логина и пароля
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Имитация задержки
-      navigate('/first-page');
-    } catch (error) {
-      console.error('Ошибка авторизации:', error);
+      const result = await login(email, password);
+      
+      if (result.success) {
+        navigate('/first-page');
+      } else {
+        setError(result.error || 'Ошибка авторизации');
+      }
+    } catch (err) {
+      setError('Ошибка соединения с сервером');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeveloperClick = () => {
-    console.log('Клик по ссылке разработчика');
+    console.log('Контакт с разработчиком');
   };
 
   return (
@@ -44,18 +57,25 @@ const Login = () => {
         <div className={styles.centerTextBox}>
           <AuthHeader
             title="ToDoHero"
+            titleFont="BricolageGrotesque"
             titleSize="49.41px"
             subtitle="Делайте больше, волнуйтесь меньше. Теперь все важные задачи будут под рукой с новым ToDo приложением!"
+            subtitleFont="Bounded"
           />
 
           <form onSubmit={handleSubmit} className={styles.form}>
+            {error && <div className={styles.error}>{error}</div>}
+            
             <div className={styles.formContainer}>
               <Input
-                type="text"
-                placeholder="Логин пользователя"
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                icon={<img src={PersonIcon} alt="person-icon" />}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError('');
+                }}
+                icon={<img src={PersonIcon} alt="email-icon" />}
                 required
               />
               
@@ -88,9 +108,13 @@ const Login = () => {
             <div className={styles.linkpass}>
               <p>
                 Забыли пароль?{' '}
-                <Link to="/change-password" className={styles.link}>
+                <button 
+                  type="button" 
+                  className={styles.linkButton}
+                  onClick={() => navigate('/change-password')}
+                >
                   Восстановить пароль
-                </Link>
+                </button>
               </p>
             </div>
           </form>

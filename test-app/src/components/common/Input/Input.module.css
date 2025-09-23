@@ -42,7 +42,7 @@
   height: 100%;
   width: 330px; /* Ширина как в оригинале */
   margin-top: 0; /* Убираем margin-top из оригинала */
-  padding: 5px; /* Padding как в оригинале */
+  padding: 14px; /* Padding как в оригинале */
 }
 
 .inputField:focus {

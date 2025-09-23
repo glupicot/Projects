@@ -1,0 +1,177 @@
+/* src/components/tasks/TaskForm/TaskForm.module.css */
+.overlayBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.overlayContent {
+  width: 842px;
+  height: 100vh;
+  background-color: var(--color-dblue);
+  border-radius: 28px 0 0 28px;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.buttonsTop {
+  display: flex;
+  align-items: center;
+  margin: 32px;
+  gap: 8px;
+}
+
+.button {
+  width: 24px;
+  height: 24px;
+  background-color: var(--color-button-shadow);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.shareButton {
+  width: 44px;
+  height: 24px;
+  background-color: var(--color-button-shadow);
+  border-radius: 8px;
+  padding: 8px;
+  color: var(--color-white);
+  text-align: center;
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.form {
+  padding: 0 32px;
+}
+
+.titleInput {
+  width: 754px;
+  height: 68px;
+  border: 1px solid var(--color-button-shadow);
+  background-color: var(--color-task-extra-dblue);
+  border-radius: 20px;
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+  padding: 0 20px;
+  margin-bottom: 16px;
+}
+
+.titleInput::placeholder {
+  color: var(--color-task-font);
+}
+
+.descriptionInput {
+  width: 754px;
+  min-height: 338px;
+  border: 1px solid var(--color-button-shadow);
+  background-color: var(--color-task-extra-dblue);
+  border-radius: 20px;
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+  padding: 24px 20px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.descriptionInput::placeholder {
+  color: var(--color-task-font);
+}
+
+.dateContainer {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dateInputContainer {
+  position: relative;
+  width: 178px;
+}
+
+.dueDateInput {
+  width: 178px;
+  height: 68px;
+  border: none;
+  background-color: var(--color-button-shadow);
+  border-radius: 20px;
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+  padding: 0 20px;
+}
+
+.dueDateInput:valid {
+  color: var(--color-white);
+}
+
+.datePlaceholder {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-task-font);
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.dueDateInput:not(:placeholder-shown) ~ .datePlaceholder,
+.dueDateInput:focus ~ .datePlaceholder {
+  display: none;
+}
+
+.sprintInput {
+  width: 754px;
+  height: 68px;
+  border: 1px solid var(--color-button-shadow);
+  background-color: var(--color-task-extra-dblue);
+  border-radius: 20px;
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+  padding: 0 20px;
+  margin-bottom: 16px;
+}
+
+.sprintInput::placeholder {
+  color: var(--color-task-font);
+}
+
+.formButtons {
+  display: flex;
+  gap: 16px;
+}
+
+.saveButton, .cancelButton {
+  width: 178px;
+  height: 68px;
+  border: none;
+  background-color: var(--color-button-shadow);
+  border-radius: 20px;
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.saveButton:hover, .cancelButton:hover {
+  background-color: var(--color-blue);
+}

@@ -1,12 +1,15 @@
 /* src/components/common/EmailInput/EmailInput.module.css */
 .inputContainer {
   margin-bottom: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .emailInput {
   width: 467px;
   height: 78px;
-  text-indent: 84px;
+  text-indent: 84px; /* Отступ для иконки */
   font-family: "VelaSans";
   font-size: 18px;
   background-color: var(--color-white);
@@ -16,11 +19,12 @@
   color: var(--color-gray);
   background-image: url('../../../assets/icons/mail.svg');
   background-repeat: no-repeat;
-  background-position: 20px center;
+  background-position: 10px center;
 }
 
 .emailInput:focus {
   color: var(--color-black);
+  border-color: var(--color-blue);
 }
 
 @media (max-width: 1024px) {
@@ -34,7 +38,8 @@
   .emailInput {
     height: 60px;
     font-size: 16px;
-    text-indent: 60px;
+    text-indent: 50px;
     background-position: 15px center;
+    background-size: 20px 20px;
   }
 }

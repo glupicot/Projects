@@ -1,0 +1,131 @@
+/* src/components/tasks/TaskItem/TaskItem.module.css */
+.task {
+  width: 1400px;
+  min-height: 120px;
+  background-color: var(--color-task-dark-blue);
+  border-radius: 28px;
+  padding: 32px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.task:hover {
+  background-color: var(--color-task-extra-dblue);
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.completeIcon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.taskName {
+  flex: 1;
+  font-family: "VelaSans";
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--color-white);
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.task.completed .taskName {
+  text-decoration: line-through;
+  color: var(--color-task-light-blue);
+}
+
+.toggleIcon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-right: 8px;
+  background-color: var(--color-button-shadow);
+  border-radius: 8px;
+  padding: 8px;
+  transition: transform 0.3s ease;
+}
+
+.deleteIcon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  background-color: var(--color-button-shadow);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.taskDescription {
+  margin-left: 40px;
+  margin-bottom: 16px;
+  max-height: 500px;
+  opacity: 1;
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.taskDescription p {
+  font-family: "VelaSans";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--color-white);
+  margin: 0;
+}
+
+.task.completed .taskDescription p {
+  color: var(--color-task-light-blue);
+  text-decoration: line-through;
+}
+
+.taskFooter {
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
+}
+
+.date {
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-white);
+}
+
+.date.overdue {
+  color: var(--color-red) !important;
+}
+
+.task.completed .date {
+  color: var(--color-task-light-blue);
+  text-decoration: line-through;
+}
+
+.separator {
+  width: 24px;
+  height: 24px;
+  margin: 0 8px;
+}
+
+.sprint {
+  font-family: "VelaSans";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-green);
+}
+
+.task.completed .sprint {
+  color: var(--color-task-light-blue);
+  text-decoration: line-through;
+}
+
+.repeatIcon {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+}

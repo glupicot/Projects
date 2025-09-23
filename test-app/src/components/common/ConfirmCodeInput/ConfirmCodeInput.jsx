@@ -1,9 +1,10 @@
 // src/components/common/ConfirmCodeInput/ConfirmCodeInput.jsx
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styles from './ConfirmCodeInput.module.css';
 
-const ConfirmCodeInput = ({ length = 4, onCodeChange }) => {
+const ConfirmCodeInput = ({ length = 5, onCodeChange, onCodeComplete }) => {
   const inputsRef = useRef([]);
+  const [code, setCode] = useState('');
 
   useEffect(() => {
     inputsRef.current[0]?.focus();
@@ -24,8 +25,13 @@ const ConfirmCodeInput = ({ length = 4, onCodeChange }) => {
     }
 
     // Собираем полный код
-    const code = inputsRef.current.map(input => input?.value || '').join('');
-    onCodeChange?.(code);
+    const newCode = inputsRef.current.map(input => input?.value || '').join('');
+    setCode(newCode);
+    onCodeChange?.(newCode);
+    
+    if (newCode.length === length) {
+      onCodeComplete?.(newCode);
+    }
   };
 
   const handleKeyDown = (e, index) => {
@@ -49,12 +55,17 @@ const ConfirmCodeInput = ({ length = 4, onCodeChange }) => {
     const lastIndex = Math.min(pasteData.length, length - 1);
     inputsRef.current[lastIndex]?.focus();
 
-    const code = inputsRef.current.map(input => input?.value || '').join('');
-    onCodeChange?.(code);
+    const newCode = inputsRef.current.map(input => input?.value || '').join('');
+    setCode(newCode);
+    onCodeChange?.(newCode);
+    
+    if (newCode.length === length) {
+      onCodeComplete?.(newCode);
+    }
   };
 
   return (
-    <div className={styles.codeContainer}>
+    <div className={styles.pinCode}>
       {Array.from({ length }).map((_, index) => (
         <input
           key={index}
@@ -62,10 +73,12 @@ const ConfirmCodeInput = ({ length = 4, onCodeChange }) => {
           type="text"
           inputMode="numeric"
           maxLength={1}
+          placeholder="_"
           className={styles.pinInput}
           onInput={(e) => handleInput(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           onPaste={handlePaste}
+          autoFocus={index === 0}
         />
       ))}
     </div>

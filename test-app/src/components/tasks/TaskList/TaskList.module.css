@@ -1,0 +1,16 @@
+/* src/components/tasks/TaskList/TaskList.module.css */
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emptyMessage {
+  color: var(--color-white);
+  font-family: "VelaSans";
+  font-weight: 500;
+  font-size: 16px;
+  padding: 20px;
+  text-align: center;
+  opacity: 0.7;
+}

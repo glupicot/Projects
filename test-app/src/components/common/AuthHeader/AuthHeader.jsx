@@ -5,7 +5,7 @@ const AuthHeader = ({
   title, 
   subtitle,
   titleSize = "38px",
-  subtitleSize = "14px",
+  subtitleSize = "14px regular",
   titleFont = "Unbounded", // Добавляем проп для шрифта
   subtitleFont = "Unbounded" // Добавляем проп для шрифта
 }) => {

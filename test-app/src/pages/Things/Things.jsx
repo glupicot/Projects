@@ -1,126 +1,120 @@
+// src/pages/Things/Things.jsx
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; 
-import usePasswordToggle from '../../hooks/usePasswordToggle';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import Input from '../../components/common/Input/Input';
+import Button from '../../components/common/Button/Button';
+import AuthHeader from '../../components/common/AuthHeader/AuthHeader';
+import AuthFooter from '../../components/common/AuthFooter/AuthFooter';
+import AuthIllustration from '../../components/common/AuthIllustration/AuthIllustration';
 import styles from './things.module.css';
 
-// Импортируем изображения
 import PersonIcon from '../../assets/icons/Person.svg';
 import VectorIcon from '../../assets/icons/Vector.svg';
-import GlazokClosed from '../../assets/icons/glazok-closed.svg';
-import GlazokOpen from '../../assets/icons/glazok.svg';
 import ManImage from '../../assets/images/man.svg';
 
 const Things = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState(false);
-  const [passwordType, togglePasswordVisibility] = usePasswordToggle();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Логин:', login, 'Пароль:', password);
-    
-    // Проверка логина (заглушка)
-    if (login !== "admin") {
-      setLoginError(true);
-      return;
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  setError('');
+  setLoading(true);
+
+  try {
+    if (login && password) {
+      authLogin({ username: login }, 'mock-token');
+      navigate('/first-page'); // Должен переходить на FirstPage
+    } else {
+      setError('Заполните все поля');
     }
-    
-    // Если логин правильный, переходим на страницу смены пароля
-    navigate("/change-password");
+  } catch (err) {
+    setError('Ошибка авторизации');
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const handleDeveloperClick = () => {
+    console.log('Клик по ссылке разработчика');
   };
 
   return (
-    <div id="root">
-      <div className={styles.container}>
-        <div className={styles.left}>
-          <div className={styles.centerTextBox}>
-            <h1>Things</h1>
-            <h2>
-              Делайте больше, волнуйтесь меньше. Теперь все важные<br />
-              задачи будут под рукой с новым ToDo приложением!
-            </h2>
+    <div className={styles.container}>
+      <div className={styles.left}>
+        <div className={styles.centerTextBox}>
+          <AuthHeader
+            title="Things"
+            titleFont="BricolageGrotesque"
+            titleSize="49.41px"
+            subtitle="Делайте больше, волнуйтесь меньше. Теперь все важные задачи будут под рукой с новым ToDo приложением!"
+            subtitleFont="Bounded"
+          />
 
-            <form onSubmit={handleSubmit}>
-              <div className={styles.formContainer}>
-                <div className={styles.input}>
-                  <div className={styles.svglogin}>
-                    <img src={PersonIcon} alt="person-icon" />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Логин пользователя"
-                    value={login}
-                    onChange={(e) => {
-                      setLogin(e.target.value);
-                      setLoginError(false);
-                    }}
-                    required
-                  />
-                  {loginError && (
-                    <div className={styles.errorlog}>
-                      <div className={styles.triangle}></div>
-                      <span className={styles.errorText}>
-                        Ошибка: пользователь с таким<br />
-                        логином не существует
-                      </span>
-                    </div>
-                  )}
-                </div>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            {error && <div className={styles.error}>{error}</div>}
+            
+            <div className={styles.formContainer}>
+              <Input
+                type="text"
+                placeholder="Логин пользователя"
+                value={login}
+                onChange={(e) => {
+                  setLogin(e.target.value);
+                  setError('');
+                }}
+                icon={<img src={PersonIcon} alt="person-icon" />}
+                required
+              />
+              
+              <Input
+                type="password"
+                placeholder="Пароль"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                icon={<img src={VectorIcon} alt="password-icon" />}
+                showPasswordToggle={true}
+                required
+              />
+            </div>
 
-                <div className={styles.input}>
-                  <div className={styles.svgpass}>
-                    <img src={VectorIcon} alt="password-icon" />
-                  </div>
-                  <input
-                    type={passwordType}
-                    id="myPass"
-                    placeholder="Пароль"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <div className={styles.svgeye} onClick={togglePasswordVisibility}>
-                    <img
-                      id="myImage"
-                      src={passwordType === 'password' ? GlazokClosed : GlazokOpen}
-                      alt="toggle visibility"
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </div>
-                </div>
-              </div>
+            <Button
+              type="submit"
+              variant="primary"
+              size="large"
+              loading={loading}
+            >
+              Войти в систему
+            </Button>
 
-              <button type="submit" className={styles.button}>
-                Войти в систему
-              </button>
+            <AuthFooter
+              text="Если у вас нет учетной записи, обратитесь"
+              linkText="к разработчику"
+              onLinkClick={handleDeveloperClick}
+            />
 
-              <div className={styles.wtf}>
-                <p>
-                  Если у вас нет учетной записи, обратитесь{' '}
-                  <a href="#" className={styles.button}>к разработчику</a>
-                </p>
-              </div>
-
-              <div className={styles.linkpass}>
-                <p>
-                  Забыли пароль?{' '}
-                  <Link to="/change-password" className={styles.button}>
-                    Восстановить пароль
-                  </Link>
-                </p>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div className={styles.right}>
-          <div className={styles.centered}> 
-            <img src={ManImage} alt="Illustration" />
-          </div>
+            <div className={styles.linkpass}>
+              <p>
+                Забыли пароль?{' '}
+                <button 
+                  type="button" 
+                  className={styles.linkButton}
+                  onClick={() => navigate('/change-password')}
+                >
+                  Восстановить пароль
+                </button>
+              </p>
+            </div>
+          </form>
         </div>
       </div>
+
+      <AuthIllustration imageSrc={ManImage} />
     </div>
   );
 };

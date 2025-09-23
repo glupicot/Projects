@@ -1,6 +1,7 @@
 // src/pages/ConfirmCode/ConfirmCode.jsx
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import BackLink from '../../components/common/BackLink/BackLink';
 import AuthHeader from '../../components/common/AuthHeader/AuthHeader';
 import ConfirmCodeInput from '../../components/common/ConfirmCodeInput/ConfirmCodeInput';
@@ -14,32 +15,67 @@ import ManImage from '../../assets/images/man.svg';
 const ConfirmCode = () => {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { verifyResetCode } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || 'your@email.com';
+  const email = location.state?.email;
+
+  if (!email) {
+    navigate('/change-password');
+    return null;
+  }
 
   const handleCodeChange = (newCode) => {
     setCode(newCode);
+    setError('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (code.length === 4) {
-      setLoading(true);
-      try {
-        console.log('Код подтверждения:', code);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        navigate('/new-password');
-      } catch (error) {
-        console.error('Ошибка:', error);
-      } finally {
-        setLoading(false);
+    if (code.length !== 6) {
+      setError('Введите 6-значный код');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const result = await verifyResetCode(email, code);
+      
+      if (result.success) {
+        navigate('/new-password', { 
+          state: { 
+            email, 
+            resetToken: result.token 
+          } 
+        });
+      } else {
+        setError(result.error || 'Неверный код');
       }
+    } catch (err) {
+      setError('Ошибка соединения с сервером');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDeveloperClick = () => {
-    console.log('Клик по ссылке разработчика');
+  const handleResendCode = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const result = await requestPasswordReset(email);
+      
+      if (!result.success) {
+        setError(result.error || 'Ошибка отправки кода');
+      }
+    } catch (err) {
+      setError('Ошибка соединения с сервером');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,30 +85,37 @@ const ConfirmCode = () => {
         
         <div className={styles.centerTextBox}>
           <AuthHeader
-            title="Код подтверждения"
-            subtitle={`Введите 4-значный код, отправленный на ${email}`}
+            title="Подтверждение кода"
+            subtitle={`Введите 6-значный код, отправленный на ${email}`}
           />
 
           <form onSubmit={handleSubmit}>
+            {error && <div className={styles.error}>{error}</div>}
+            
             <ConfirmCodeInput 
-              length={4} 
+              length={6}
               onCodeChange={handleCodeChange} 
             />
 
             <Button
               type="submit"
-              isActive={code.length === 4}
+              isActive={code.length === 6}
               loading={loading}
               size="large"
             >
               Подтвердить
             </Button>
 
-            <AuthFooter
-              text="Если у вас нет учетной записи, обратитесь"
-              linkText="к разработчику"
-              onLinkClick={handleDeveloperClick}
-            />
+            <div className={styles.resend}>
+              <button 
+                type="button" 
+                className={styles.resendButton}
+                onClick={handleResendCode}
+                disabled={loading}
+              >
+                Отправить код повторно
+              </button>
+            </div>
           </form>
         </div>
       </div>
